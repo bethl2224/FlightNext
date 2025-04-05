@@ -32,10 +32,11 @@ export async function POST(request) {
     //helper for testing
     // deleteHotel(name);
     // deleteHotelOwner(account.id);
+    let updatedOwner;
 
     //add logo to s3 bucket and retrieve the url
     logo = (await process_img(logo, uploadFileToS3Hotel, "Hotel-logo"))[0]
-        .imageUrl;
+      .imageUrl;
     let newHotel = await prisma.hotel.create({
       data: {
         name: name,
@@ -77,7 +78,7 @@ export async function POST(request) {
         });
       }
       //Add owner id
-      const updatedOwner = await prisma.hotelOwner.update({
+      updatedOwner = await prisma.hotelOwner.update({
         where: {
           id: newOwner.id,
         },
@@ -109,12 +110,9 @@ export async function POST(request) {
           ownerId: updatedOwner.id,
         },
       });
-    }
-
-    else {
-    
+    } else {
       // if account is already hotel owner
-      const updatedOwner = await prisma.hotelOwner.update({
+      updatedOwner = await prisma.hotelOwner.update({
         where: {
           accountId: account.id,
         },
@@ -127,7 +125,7 @@ export async function POST(request) {
         },
       });
 
-      console.log("line 130")
+      console.log("line 130");
 
       // Update the hotel with the ownerId
       newHotel = await prisma.hotel.update({
