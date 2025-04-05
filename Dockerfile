@@ -24,11 +24,11 @@ WORKDIR /app
 COPY --from=builder /app .
 RUN rm -rf /app/node_modules
 
-#move the fake date scripts are executable
-RUN mv /app/utils/fake-data /app/fake-data
+# #move the fake date scripts are executable
+# RUN mv /app/utils/fake-data /app/fake-data
 
-# make sure the fake-data scripts are executable
-RUN chmod +x /app/fake-data/*.sh
+# # make sure the fake-data scripts are executable
+# RUN chmod +x /app/fake-data/*.sh
 
 # Install production dependencies
 RUN npm install --only=production
