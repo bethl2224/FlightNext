@@ -8,7 +8,6 @@ import TestimonialsSection from "@pages/main/TestimonialsSection";
 import Footer from "@pages/main/Footer";
 import Header from "@pages/main/Header";
 import Hero from "@pages/main/Hero";
-import { apiURl } from "@/utils/hotel-query";
 import { useState, useEffect } from "react";
 
 function FlightNext() {
