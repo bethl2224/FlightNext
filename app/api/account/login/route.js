@@ -15,7 +15,7 @@ export async function POST(req) {
     const data = await req.json();
     console.log(data);
     const { username, password, role } = data;
-     
+
     if (!username || !password) {
       return NextResponse.json(
         { error: "Email and password are required" },
@@ -23,11 +23,10 @@ export async function POST(req) {
       );
     }
     let user = await getUserByUsername(username, role);
-    console.log("login.js", role, username, password)
+    console.log("login.js", role, username, password);
     if (!user) {
-    
       return NextResponse.json(
-        { error: "Invalid credentials mmmmmmmm" },
+        { error: "Invalid credentials" },
         { status: 401 }
       );
     }
