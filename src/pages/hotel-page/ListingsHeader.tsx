@@ -226,10 +226,8 @@ function ListingsHeader({
             }
 
             //validate date
-
-            if (!validateDate(checkInDate, checkOutDate)) {
-              return;
-            }
+            const role = sessionStorage.getItem("role");
+            validateDate(checkInDate, checkOutDate, role || "visitor");
 
             // Pass in optional parameters
             if (star) {
@@ -250,7 +248,6 @@ function ListingsHeader({
             // Debug the params object
             console.log("Search Parameters:", params);
 
-            const role = sessionStorage.getItem("role");
             console.log("ROLE**************");
             console.log(role);
             console.log("ROLE**************");

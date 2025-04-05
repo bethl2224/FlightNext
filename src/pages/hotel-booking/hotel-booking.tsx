@@ -3,6 +3,7 @@ import * as React from "react";
 import AuthInput from "@pages/auth/AuthInput";
 import { useState } from "react";
 import "@pages/styles/globals.css";
+import { validateDate } from "@/utils/hotel-query";
 
 function BookingRecord({
   roomType,
@@ -56,6 +57,11 @@ function BookingRecord({
         credentials: "include",
         body: JSON.stringify(bookingData),
       });
+
+      if (!validateDate(bookCheckInDate, bookcheckOutDate)) {
+        setMessage("Error");
+        return;
+      }
 
       if (!response.ok) {
         alert("Invalid Date Range or Credit Card Info");
@@ -124,7 +130,15 @@ function BookingRecord({
       >
         Book Now
       </button>
-      <div className="text-center">
+      <div
+        className={`text-center ${
+          message === "Success"
+            ? "text-green-500"
+            : message === "Error"
+            ? "text-red-500"
+            : ""
+        }`}
+      >
         {message === "Success"
           ? "Successfully booked!"
           : message === "Error"

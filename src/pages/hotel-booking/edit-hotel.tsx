@@ -3,6 +3,7 @@ import * as React from "react";
 import AuthInput from "@pages/auth/AuthInput";
 import { useState } from "react";
 import "@pages/styles/globals.css";
+import { validateDate } from "@/utils/hotel-query";
 
 function BookingRecord({
   roomType,
@@ -45,6 +46,11 @@ function BookingRecord({
     console.log("*****************************");
     console.log("Booking data:", bookingData);
     console.log("*****************************");
+
+    if (!validateDate(bookCheckInDate, bookcheckOutDate)) {
+      setMessage("Invalid date range");
+      return;
+    }
 
     try {
       const response = await fetch("/api/hotel/user/room-booking", {
@@ -125,6 +131,8 @@ function BookingRecord({
           ? "Successfully booked!"
           : message === "Error"
           ? "An error occurred."
+          : message === "Invalid date range"
+          ? "Invalid date range"
           : ""}
       </div>
 

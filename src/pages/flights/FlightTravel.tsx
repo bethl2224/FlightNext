@@ -10,25 +10,36 @@ import DestinationSection from "./DestinationSection";
 import Footer from "@pages/main/Footer";
 import "@pages/styles/globals.css";
 
-
-
-
 const TripmaTravel: React.FC = () => {
   const searchParams = useSearchParams(); // Get search parameters from the URL
 
   // State for form fields
-  const [tripType, setTripType] = React.useState(searchParams?.get("flight_type") || "oneway");
+  const [tripType, setTripType] = React.useState(
+    searchParams?.get("flight_type") || "oneway"
+  );
   const [startDate, setStartDate] = React.useState<Date | null>(
-    searchParams && searchParams.get("date") ? new Date(searchParams.get("date")!) : null
+    searchParams && searchParams.get("date")
+      ? new Date(searchParams.get("date")!)
+      : null
   );
   const [endDate, setEndDate] = React.useState<Date | null>(
-    searchParams && searchParams.get("round_trip_date") ? new Date(searchParams.get("round_trip_date")!) : null
+    searchParams && searchParams.get("round_trip_date")
+      ? new Date(searchParams.get("round_trip_date")!)
+      : null
   );
-  const [departureQuery, setDepartureQuery] = React.useState(searchParams?.get("origin") || "");
-  const [arrivalQuery, setArrivalQuery] = React.useState(searchParams?.get("destination") || "");
-  const [departureSuggestions, setDepartureSuggestions] = React.useState<string[]>([]);
-  const [arrivalSuggestions, setArrivalSuggestions] = React.useState<string[]>([]);
-   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [departureQuery, setDepartureQuery] = React.useState(
+    searchParams?.get("origin") || ""
+  );
+  const [arrivalQuery, setArrivalQuery] = React.useState(
+    searchParams?.get("destination") || ""
+  );
+  const [departureSuggestions, setDepartureSuggestions] = React.useState<
+    string[]
+  >([]);
+  const [arrivalSuggestions, setArrivalSuggestions] = React.useState<string[]>(
+    []
+  );
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [flightData, setFlightData] = React.useState<any[]>([]); // State to store fetched flight data
   const [isLoading, setIsLoading] = React.useState(false); // Loading state
 
@@ -47,23 +58,33 @@ const TripmaTravel: React.FC = () => {
 
     const endpoint = `/api/flights/details?origin=${encodeURIComponent(
       origin
-    )}&destination=${encodeURIComponent(destination)}&date=${formattedStartDate}&flight_type=${encodeURIComponent(
+    )}&destination=${encodeURIComponent(
+      destination
+    )}&date=${formattedStartDate}&flight_type=${encodeURIComponent(
       tripType === "twoway" ? "round_trip" : tripType
-    )}${tripType === "twoway" && endDate ? `&round_trip_date=${formattedEndDate}` : ""}`;
+    )}${
+      tripType === "twoway" && endDate
+        ? `&round_trip_date=${formattedEndDate}`
+        : ""
+    }`;
 
     try {
+      // if (!validateDate(formattedStartDate, formattedEndDate)) {
+      //   return;
+      // }
       const response = await fetch(endpoint);
       if (!response.ok) {
-        throw new Error(`Error fetching flight details: ${response.statusText}`);
+        throw new Error(
+          `Error fetching flight details: ${response.statusText}`
+        );
       }
       const data = await response.json();
       if (data.results.length === 0) {
-        alert("No Flights Found...")
+        alert("No Flights Found...");
         setFlightData([]);
       } else {
         setFlightData(data.results || []);
       }
-  
     } catch {
       setFlightData([]);
     } finally {
@@ -71,15 +92,9 @@ const TripmaTravel: React.FC = () => {
     }
   }, [departureQuery, arrivalQuery, startDate, endDate, tripType]);
 
-
   // Trigger fetch when all required fields are filled or search params are not empty
   React.useEffect(() => {
-    if (
-      tripType === "oneway" &&
-      departureQuery &&
-      arrivalQuery &&
-      startDate
-    ) {
+    if (tripType === "oneway" && departureQuery && arrivalQuery && startDate) {
       fetchFlightData();
     } else if (
       tripType === "twoway" &&
@@ -90,7 +105,14 @@ const TripmaTravel: React.FC = () => {
     ) {
       fetchFlightData();
     }
-  }, [departureQuery, arrivalQuery, startDate, endDate, tripType, fetchFlightData]);
+  }, [
+    departureQuery,
+    arrivalQuery,
+    startDate,
+    endDate,
+    tripType,
+    fetchFlightData,
+  ]);
 
   // Fetch suggestions for arrivalQuery
   React.useEffect(() => {
@@ -160,8 +182,6 @@ const TripmaTravel: React.FC = () => {
     }
   }, [departureQuery]);
 
-  
-
   return (
     <>
       <Header />
@@ -185,22 +205,25 @@ const TripmaTravel: React.FC = () => {
             setEndDate={setEndDate}
           />
         </div>
-  
+
         {/* Error Message
         {errorMessage && <div className="text-center text-red-500 mt-4">{errorMessage}</div>} */}
-  
-  
+
         {/* Render FlightResults */}
         {!isLoading && flightData.length > 0 && (
           <div className="mb-10 bg-white shadow-md rounded-lg p-6 border border-gray-200">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Flight Results</h2>
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">
+              Flight Results
+            </h2>
             <FlightResults flights={flightData} />
           </div>
         )}
-  
+
         {/* Visualization Section */}
         <div className="mb-10 bg-gray-50 shadow-md rounded-lg p-6 border border-gray-200">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Map Visualization</h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">
+            Map Visualization
+          </h2>
           <MapVisualization />
         </div>
         <HotelSection />
