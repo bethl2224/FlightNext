@@ -1,3 +1,4 @@
+import { convertDate } from "./helper";
 export async function fetchHotel() {
   try {
     const res = await fetch("/api/hotel/owner/get-hotel", {
@@ -195,46 +196,32 @@ export async function deleteMessage(messageId) {
 export function validateDate(checkInDate, checkOutDate) {
   let checkInDateObj, checkOutDateObj;
   if (checkInDate) {
-    const [year, month, day] = checkInDate.split("-");
-    checkInDateObj = new Date(Date.UTC(year, month - 1, day));
+    checkInDateObj = convertDate(checkInDate);
   }
   if (checkOutDate) {
-    const [year, month, day] = checkOutDate.split("-");
-    checkOutDateObj = new Date(Date.UTC(year, month - 1, day));
+    checkOutDateObj = new convertDate(checkOutDate);
   }
 
-  const todayDateOnly = new Date(
-    Date.UTC(
-      new Date().getFullYear(),
-      new Date().getMonth(),
-      new Date().getDate()
-    )
-  );
+  let today = new Date();
+  today = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  today = convertDate(today.toISOString().split("T")[0]); // Convert to string in yyyy-mm-dd format
 
-  console.log("todayDateOnly", todayDateOnly);
-  console.log("checkInDateObj", checkInDateObj);
+  // console.log("today", today);
+  // console.log("checkInDate", checkInDate);
+  // console.log("checkOutDate", checkOutDate);
 
-  if (
-    checkInDate &&
-    checkInDateObj.getFullYear() == todayDateOnly.getFullYear() &&
-    checkInDateObj.getMonth() == todayDateOnly.getMonth() &&
-    checkInDateObj.getDate() == todayDateOnly.getDate()
-  ) {
-    return true;
-  }
-
-  if (checkInDate && checkInDateObj < todayDateOnly) {
+  if (checkInDate && checkInDateObj < today) {
     alert("Check-in date cannot be earlier than today.");
-    return;
+    return false;
   }
-  if (checkOutDate && checkOutDateObj < todayDateOnly) {
+  if (checkOutDate && checkOutDateObj < today) {
     alert("Check-out date cannot be earlier than today.");
-    return;
+    return false;
   }
 
   if (checkInDate && checkOutDate && checkInDateObj > checkOutDateObj) {
     alert("Check-in date cannot be later than check-out date.");
-    return;
+    return false;
   }
 
   return true;

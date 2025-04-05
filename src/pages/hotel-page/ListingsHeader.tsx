@@ -227,7 +227,9 @@ function ListingsHeader({
 
             //validate date
 
-            validateDate(checkInDate, checkOutDate);
+            if (!validateDate(checkInDate, checkOutDate)) {
+              return;
+            }
 
             // Pass in optional parameters
             if (star) {
