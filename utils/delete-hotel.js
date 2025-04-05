@@ -1,9 +1,7 @@
-import { apiURl } from "./hotel-query";
-
 async function deleteBookingOwner(bookingid) {
   try {
     const res = await fetch(
-      "/api/hotel/owner/room-booking?bookingId=${bookingid}",
+      `/api/hotel/owner/room-booking?bookingId=${bookingid}`,
       {
         method: "DELETE",
         headers: {
