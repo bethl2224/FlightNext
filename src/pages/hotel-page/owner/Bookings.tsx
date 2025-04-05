@@ -1,6 +1,5 @@
 "use client";
 
-import { apiURl } from "@/utils/hotel-query";
 import React, { useEffect, useState } from "react";
 import Header from "@pages/main/Header";
 import { fetchRoomTypes } from "@/utils/hotel-query";

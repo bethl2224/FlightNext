@@ -40,7 +40,7 @@ EXPOSE 3000
 ENV POSTGRES_USER=postgres
 ENV POSTGRES_PASSWORD=mysecurepassword
 ENV POSTGRES_DB=appDB
-ENV DATABASE_URL=postgresql://postgres:mysecurepassword@postgres.railway.internal:5432/appDB
+ENV DATABASE_URL=postgresql://postgres:mysecurepassword@db:5432/appDB
 
 
 # Create start script

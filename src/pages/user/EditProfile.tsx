@@ -6,7 +6,6 @@ import ProfileImageSection from "./ProfileImageSection";
 import ProfileHeader from "./ProfileHeader";
 import ProfileForm from "./ProfileForm";
 import Header from "@pages/main/Header";
-import { apiURl } from "@/utils/hotel-query";
 import Footer from "@pages/main/Footer";
 import "@pages/styles/globals.css";
 
