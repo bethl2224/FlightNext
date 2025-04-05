@@ -1,6 +1,5 @@
 import React from "react";
 import { RoomType } from "./visitor/HotelListings";
-import { apiURl } from "@/utils/hotel-query";
 import Image from "next/image";
 import BookingModal from "@pages/hotel-booking/hotel-booking";
 import EditModal from "./owner/EditModal";
@@ -14,7 +13,7 @@ interface RoomTypeListProps {
 
 const handleLike = async (hotelId: number) => {
   try {
-    const response = await fetch(`${apiURl}/hotel/user/add-hotel`, {
+    const response = await fetch("/api/hotel/user/add-hotel", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

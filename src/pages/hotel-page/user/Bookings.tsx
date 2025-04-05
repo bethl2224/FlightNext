@@ -28,7 +28,7 @@ function UserBookings() {
   const [bookings, setBookings] = useState<Booking[]>([]); // Initialize with an empty array
   useEffect(() => {
     const fetchBookings = async () => {
-      const response = await fetch(`${apiURl}/hotel/user/room-booking`, {
+      const response = await fetch("/api/hotel/user/room-booking", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

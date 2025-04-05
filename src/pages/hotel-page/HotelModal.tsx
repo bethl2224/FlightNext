@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { apiURl } from "@/utils/hotel-query";
 import "@pages/styles/globals.css";
 
 const HotelModal: React.FC = () => {
@@ -30,7 +29,7 @@ const HotelModal: React.FC = () => {
       setIsLoading(true);
       try {
         const params = new URLSearchParams({ city: query });
-        const response = await fetch(`${apiURl}/flights/cities?${params}`);
+        const response = await fetch(`/api/flights/cities?${params}`);
         if (response.ok) {
           const data = await response.json();
           setCities(data);
@@ -93,7 +92,7 @@ const HotelModal: React.FC = () => {
         console.log(`${key}:`, value);
       });
 
-      const res = await fetch(`${apiURl}/hotel/user/create-hotel`, {
+      const res = await fetch("api/hotel/user/create-hotel", {
         method: "POST",
         credentials: "include",
         body: formDataToSend,

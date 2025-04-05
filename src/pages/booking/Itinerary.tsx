@@ -8,7 +8,6 @@ import FlightCart from "./FlightCart";
 import DestinationSection from "./DestinationSection";
 import TripmaFooter from "@pages/main/Footer";
 import "@pages/styles/globals.css";
-import { apiURl } from "@/utils/hotel-query";
 import { useState, useEffect } from "react";
 import { Flight } from "./FlightSearch";
 import { Hotel_Room } from "./HotelSearchBar";
@@ -125,7 +124,7 @@ const Itinerary: React.FC = () => {
   useEffect(() => {
     const fetchRole = async () => {
       try {
-        const res = await fetch(`${apiURl}/account/me`, {
+        const res = await fetch("/api/account/me", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -155,7 +154,7 @@ const Itinerary: React.FC = () => {
   useEffect(() => {
     const checkAuthentication = async () => {
       try {
-        const response = await fetch(`${apiURl}/account/me`, {
+        const response = await fetch("/api/account/me", {
           method: "GET",
           credentials: "include", // Include cookies in the request
         });
@@ -350,7 +349,7 @@ const Itinerary: React.FC = () => {
       }
 
       // Fetch user identity
-      const userResponse = await fetch(`${apiURl}/account/me`);
+      const userResponse = await fetch("/api/account/me");
       if (!userResponse.ok) {
         router.push("/user/Home");
         return;

@@ -3,7 +3,6 @@ import * as React from "react";
 import AuthInput from "@pages/auth/AuthInput";
 import { useState } from "react";
 import "@pages/styles/globals.css";
-import { apiURl } from "@/utils/hotel-query";
 
 function BookingRecord({
   roomType,
@@ -48,7 +47,7 @@ function BookingRecord({
     console.log("*****************************");
 
     try {
-      const response = await fetch(`${apiURl}/hotel/user/room-booking`, {
+      const response = await fetch("/api/hotel/user/room-booking", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

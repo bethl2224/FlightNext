@@ -70,7 +70,7 @@ const Bookings: React.FC = () => {
         console.log(params.toString());
 
         const response = await fetch(
-          `${apiURl}/hotel/owner/view-bookings?${params.toString()}`,
+          `/api/hotel/owner/view-bookings?${params.toString()}`,
           {
             method: "GET",
             headers: {
