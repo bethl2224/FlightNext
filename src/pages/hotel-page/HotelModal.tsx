@@ -92,7 +92,7 @@ const HotelModal: React.FC = () => {
         console.log(`${key}:`, value);
       });
 
-      const res = await fetch("api/hotel/user/create-hotel", {
+      const res = await fetch("/api/hotel/user/create-hotel", {
         method: "POST",
         credentials: "include",
         body: formDataToSend,
@@ -100,19 +100,21 @@ const HotelModal: React.FC = () => {
 
       if (res.ok) {
         const result = await res.json();
+        alert("Hotel created successfully");
         console.log("Hotel created successfully:", result);
         setIsOpen(false);
       } else {
-        console.error("Error creating hotel:", res.statusText);
         alert("Error creating hotel");
+        console.error("Error creating hotel:", res.statusText);
       }
     } catch (error) {
       if (error instanceof Error) {
+        alert("Error creating hotel");
         console.error("Error creating hotel:", error.stack);
       } else {
+        alert("Error creating hotel");
         console.error("Error creating hotel:", error);
       }
-      alert("Error creating hotel");
     }
   };
 
@@ -120,9 +122,9 @@ const HotelModal: React.FC = () => {
     <div>
       <button
         onClick={() => setIsOpen(true)}
-        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        className="block px-4 py-2 text-sm text-gray-700 hover:w-full  "
       >
-        Add Hotel Details
+        Create a New Hotel
       </button>
 
       {isOpen && (

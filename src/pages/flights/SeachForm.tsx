@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import FlightResults from "./FlightResults";
+import { validateDate } from "@/utils/hotel-query";
 
 interface Flight {
   id: string;
@@ -59,7 +60,7 @@ const SearchForm: React.FC<SearchFormProps> = ({
     e.preventDefault(); // Prevent default form submission behavior
     setIsSubmitted(true); // Mark the form as submitted
     // setIsLoading(true); // Start loading
-  
+
     // Validate required fields
     if (!departureQuery || !arrivalQuery || !startDate) {
       alert("Please fill in all required fields.");
@@ -67,50 +68,62 @@ const SearchForm: React.FC<SearchFormProps> = ({
       return;
     }
 
-  //     // Check if departureQuery and arrivalQuery are the same
-  if (departureQuery.trim().toLowerCase() === arrivalQuery.trim().toLowerCase()) {
-    alert("Origin and destination cannot be the same.");
-    setIsLoading(false); // Stop loading if validation fails
-    return;
-  }
+    //     // Check if departureQuery and arrivalQuery are the same
+    if (
+      departureQuery.trim().toLowerCase() === arrivalQuery.trim().toLowerCase()
+    ) {
+      alert("Origin and destination cannot be the same.");
+      setIsLoading(false); // Stop loading if validation fails
+      return;
+    }
 
-    
-  
     // Additional validation for "Two Way" trip type
     if (tripType === "twoway" && !endDate) {
       alert("Please select a return date for a Two Way trip.");
       setIsLoading(false); // Stop loading if validation fails
       return;
     }
-  
+
     const origin = departureQuery.includes(",")
       ? departureQuery.split(",")[0].trim()
       : departureQuery.trim();
     const destination = arrivalQuery.includes(",")
       ? arrivalQuery.split(",")[0].trim()
       : arrivalQuery.trim();
-  
+
     const formattedStartDate = startDate.toISOString().split("T")[0];
     const formattedEndDate = endDate ? endDate.toISOString().split("T")[0] : "";
-  
+
+    if (!validateDate(formattedStartDate, formattedEndDate)) {
+      return;
+    }
+
     const endpoint = `/api/flights/details?origin=${encodeURIComponent(
       origin
-    )}&destination=${encodeURIComponent(destination)}&date=${formattedStartDate}&flight_type=${encodeURIComponent(
+    )}&destination=${encodeURIComponent(
+      destination
+    )}&date=${formattedStartDate}&flight_type=${encodeURIComponent(
       tripType === "twoway" ? "round_trip" : tripType
-    )}${tripType === "twoway" && endDate ? `&round_trip_date=${formattedEndDate}` : ""}`;
-  
+    )}${
+      tripType === "twoway" && endDate
+        ? `&round_trip_date=${formattedEndDate}`
+        : ""
+    }`;
+
     try {
       const response = await fetch(endpoint);
       if (!response.ok) {
-        throw new Error(`Error fetching flight details: ${response.statusText}`);
+        throw new Error(
+          `Error fetching flight details: ${response.statusText}`
+        );
       }
       const data = await response.json();
-  
+
       let oneWayTrips = data.results?.oneWayTrips || [];
       const roundTrips = data.results?.roundTrip || [];
-   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       oneWayTrips = oneWayTrips.map((trip: any) =>
-         // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         trip.flights.map((flight: any) => ({
           flightNumber: flight.flightNumber,
           departureTime: flight.departureTime,
@@ -121,14 +134,16 @@ const SearchForm: React.FC<SearchFormProps> = ({
           dest_name: flight.destination.city,
           type: "one-way",
           destination: flight.destination.code,
-          duration: `${Math.floor(flight.duration / 60)}h ${flight.duration % 60}m`,
+          duration: `${Math.floor(flight.duration / 60)}h ${
+            flight.duration % 60
+          }m`,
           layovers: trip.layovers?.join(", ") || "None",
           status: flight.status,
         }))
       );
-   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const roundTripFlights = roundTrips.map((trip: any) =>
-         // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         trip.flights.map((flight: any) => ({
           flightNumber: flight.flightNumber,
           departureTime: flight.departureTime,
@@ -139,28 +154,32 @@ const SearchForm: React.FC<SearchFormProps> = ({
           destination: flight.destination.code,
           origin_name: flight.origin.city,
           dest_name: flight.destination.city,
-          duration: `${Math.floor(flight.duration / 60)}h ${flight.duration % 60}m`,
+          duration: `${Math.floor(flight.duration / 60)}h ${
+            flight.duration % 60
+          }m`,
           layovers: trip.layovers?.join(", ") || "None",
           status: flight.status,
         }))
       );
-  
+
       const all_flights = [...oneWayTrips, ...roundTripFlights];
       setSingleFlightData(all_flights);
 
-       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (err: any) {
-        if (err.message === "No suitable round trips available") {
-          alert("No suitable round trips available. Please try different dates or locations.");
-        } else if (err.message === "Flight details not found") {
-          alert("No flight details found. Please try again.");
-        } else {
-          alert(err.message || "An unknown error occurred.");
-        }
-        setSingleFlightData([]); // Clear the flight data in case of an error
-      } finally {
-        setIsLoading(false); // Stop loading after the search is complete
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      if (err.message === "No suitable round trips available") {
+        alert(
+          "No suitable round trips available. Please try different dates or locations."
+        );
+      } else if (err.message === "Flight details not found") {
+        alert("No flight details found. Please try again.");
+      } else {
+        alert(err.message || "An unknown error occurred.");
       }
+      setSingleFlightData([]); // Clear the flight data in case of an error
+    } finally {
+      setIsLoading(false); // Stop loading after the search is complete
+    }
   };
 
   return (
@@ -169,7 +188,10 @@ const SearchForm: React.FC<SearchFormProps> = ({
         <form className="flex items-center" onSubmit={handleSubmit}>
           {/* Departure City */}
           <div className="flex flex-1 flex-col gap-2 px-3 py-2 relative">
-            <i className="ti ti-plane-departure text-2xl text-slate-500" aria-hidden="true" />
+            <i
+              className="ti ti-plane-departure text-2xl text-slate-500"
+              aria-hidden="true"
+            />
             <input
               type="text"
               placeholder="From where?"
@@ -200,7 +222,10 @@ const SearchForm: React.FC<SearchFormProps> = ({
 
           {/* Arrival City */}
           <div className="flex flex-1 flex-col gap-2 px-3 py-2 relative">
-            <i className="ti ti-plane-arrival text-2xl text-slate-500" aria-hidden="true" />
+            <i
+              className="ti ti-plane-arrival text-2xl text-slate-500"
+              aria-hidden="true"
+            />
             <input
               type="text"
               placeholder="Where to?"
@@ -231,7 +256,10 @@ const SearchForm: React.FC<SearchFormProps> = ({
 
           {/* Travel Dates */}
           <div className="flex flex-1 gap-2 items-center px-3 py-2">
-            <i className="ti ti-calendar text-2xl text-indigo-500" aria-hidden="true" />
+            <i
+              className="ti ti-calendar text-2xl text-indigo-500"
+              aria-hidden="true"
+            />
             <DatePicker
               selected={startDate}
               onChange={(date) => setStartDate(date)}
@@ -245,7 +273,10 @@ const SearchForm: React.FC<SearchFormProps> = ({
             <>
               <div className="w-px h-12 bg-slate-300" role="separator" />
               <div className="flex flex-1 gap-2 items-center px-3 py-2">
-                <i className="ti ti-calendar text-2xl text-indigo-500" aria-hidden="true" />
+                <i
+                  className="ti ti-calendar text-2xl text-indigo-500"
+                  aria-hidden="true"
+                />
                 <DatePicker
                   selected={endDate}
                   onChange={(date) => setEndDate(date)}
@@ -261,7 +292,10 @@ const SearchForm: React.FC<SearchFormProps> = ({
 
           {/* Trip Type Selector */}
           <div className="flex flex-1 gap-2 items-center px-3 py-2">
-            <i className="ti ti-exchange text-2xl text-slate-500" aria-hidden="true" />
+            <i
+              className="ti ti-exchange text-2xl text-slate-500"
+              aria-hidden="true"
+            />
             <select
               value={tripType}
               onChange={(e) => setTripType(e.target.value)}
@@ -283,12 +317,21 @@ const SearchForm: React.FC<SearchFormProps> = ({
       </div>
 
       {/* Loading Indicator */}
-      {isLoading && <div className="text-center text-blue-500 mt-4">Searching for flights...</div>}
+      {isLoading && (
+        <div className="text-center text-blue-500 mt-4">
+          Searching for flights...
+        </div>
+      )}
 
       {/* Render FlightResults */}
       {isSubmitted && singleFlightData.length > 0 && (
         <div className="mt-6">
-          <FlightResults trip_type={tripType} flights={singleFlightData} isLoading={isLoading} /> {/* Fixed prop passing syntax */}
+          <FlightResults
+            trip_type={tripType}
+            flights={singleFlightData}
+            isLoading={isLoading}
+          />{" "}
+          {/* Fixed prop passing syntax */}
         </div>
       )}
     </>
