@@ -1,6 +1,5 @@
 "use client";
 import Image from "next/image";
-import { apiURl } from "@/utils/hotel-query";
 import React, { useEffect, useState } from "react";
 import Header from "@pages/main/Header";
 import { deleteBookingUser } from "@/utils/delete-hotel";

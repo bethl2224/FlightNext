@@ -2,7 +2,6 @@
 import * as React from "react";
 import { useState } from "react";
 import "@pages/styles/globals.css";
-import { apiURl } from "@/utils/hotel-query";
 
 function CreateRoomType({ hotelId }: { hotelId: number }) {
   const [isOpen, setIsOpen] = useState(false);
