@@ -197,16 +197,39 @@ export async function deleteMessage(messageId) {
 export function validateDate(checkInDate, checkOutDate) {
   let checkInDateObj, checkOutDateObj;
   if (checkInDate) {
-    checkInDateObj = convertDate(checkInDate);
+    const [year, month, day] = checkInDate.split("-");
+    checkInDateObj = new Date(Date.UTC(year, month - 1, day));
   }
   if (checkOutDate) {
-    checkOutDateObj = new convertDate(checkOutDate);
+    const [year, month, day] = checkOutDate.split("-");
+    checkOutDateObj = new Date(Date.UTC(year, month - 1, day));
   }
-  if (checkInDate && checkInDateObj < new Date()) {
+
+  const todayDateOnly = new Date(
+    Date.UTC(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate()
+    )
+  );
+
+  console.log("todayDateOnly", todayDateOnly);
+  console.log("checkInDateObj", checkInDateObj);
+
+  if (
+    checkInDate &&
+    checkInDateObj.getFullYear() == todayDateOnly.getFullYear() &&
+    checkInDateObj.getMonth() == todayDateOnly.getMonth() &&
+    checkInDateObj.getDate() == todayDateOnly.getDate()
+  ) {
+    return true;
+  }
+
+  if (checkInDate && checkInDateObj < todayDateOnly) {
     alert("Check-in date cannot be earlier than today.");
     return;
   }
-  if (checkOutDate && checkOutDateObj < new Date()) {
+  if (checkOutDate && checkOutDateObj < todayDateOnly) {
     alert("Check-out date cannot be earlier than today.");
     return;
   }
