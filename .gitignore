@@ -1,4 +1,5 @@
 # Ignore all .DS_Store files recursively
-.DS_Store
+**/.DS_Store
 node_modules/
 .next
+utils/data/
