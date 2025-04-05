@@ -8,6 +8,7 @@ import ProfileForm from "./ProfileForm";
 import Header from "@pages/main/Header";
 import Footer from "@pages/main/Footer";
 import "@pages/styles/globals.css";
+import { apiURl } from "@/utils/hotel-query";
 
 export interface ProfileData {
   firstName: string;
@@ -27,7 +28,7 @@ function EditProfile() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch("/api/account/me", {
+        const response = await fetch(`${apiURl}/account/me`, {
           method: "GET",
           credentials: "include", // Include cookies in the request
         });

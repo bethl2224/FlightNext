@@ -50,7 +50,7 @@ function FlightNext() {
   useEffect(() => {
     const checkAuthentication = async () => {
       try {
-        const response = await fetch("/api/account/me", {
+        const response = await fetch(`${apiURl}/account/me`, {
           method: "GET",
           credentials: "include", // Include cookies in the request
         });
