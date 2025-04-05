@@ -4,30 +4,30 @@ import { PrismaClient } from "@prisma/client";
 
 export const prisma = new PrismaClient();
 
-const generateRandomCreditCardNumbers = () => {
-  return Array.from({ length: 16 }, () => Math.floor(Math.random() * 10)).join(
-    ""
-  );
-};
+// const generateRandomCreditCardNumbers = () => {
+//   return Array.from({ length: 16 }, () => Math.floor(Math.random() * 10)).join(
+//     ""
+//   );
+// };
 
-const generateRandomDate = () => {
-  const randomCheckInDate = new Date(
-    2025,
-    Math.floor(Math.random() * 12),
-    Math.floor(Math.random() * 28) + 1
-  )
-    .toISOString()
-    .slice(0, 10); // Extracts yyyy-mm-dd format
+// const generateRandomDate = () => {
+//   const randomCheckInDate = new Date(
+//     2025,
+//     Math.floor(Math.random() * 12),
+//     Math.floor(Math.random() * 28) + 1
+//   )
+//     .toISOString()
+//     .slice(0, 10); // Extracts yyyy-mm-dd format
 
-  const randomCheckOutDate = new Date(
-    new Date(randomCheckInDate).getTime() +
-      Math.floor(Math.random() * 7 + 1) * 24 * 60 * 60 * 1000
-  )
-    .toISOString()
-    .slice(0, 10); // Extracts yyyy-mm-dd format
+//   const randomCheckOutDate = new Date(
+//     new Date(randomCheckInDate).getTime() +
+//       Math.floor(Math.random() * 7 + 1) * 24 * 60 * 60 * 1000
+//   )
+//     .toISOString()
+//     .slice(0, 10); // Extracts yyyy-mm-dd format
 
-  return [randomCheckInDate, randomCheckOutDate];
-};
+//   return [randomCheckInDate, randomCheckOutDate];
+// };
 
 async function findAllHotelOwner() {
   const owners = await prisma.hotelOwner.findMany({
@@ -89,23 +89,20 @@ async function createRoomType(el, username, password, hotelId) {
   formData.append("roomCapacity", el.roomCapacity.toString());
   formData.append("file", Array.isArray(el.file) ? el.file : [el.file]);
   // Send the POST request
-  const response = await fetch(
-    `http://localhost:3000/api/hotel/owner/room-type-2`,
-    {
-      method: "POST",
+  const response = await fetch("/api/hotel/owner/room-type-2", {
+    method: "POST",
 
-      headers: {
-        Authorization: `Bearer ${accessToken}`, // Pass the JWT token as Bearer
-        Cookie: [
-          `accessToken=${accessToken}; Path=/; HttpOnly`,
-          `refreshToken=${refreshToken}; Path=/; HttpOnly`,
-        ].join("; "), // Send cookies in the Cookie header
-      },
+    headers: {
+      Authorization: `Bearer ${accessToken}`, // Pass the JWT token as Bearer
+      Cookie: [
+        `accessToken=${accessToken}; Path=/; HttpOnly`,
+        `refreshToken=${refreshToken}; Path=/; HttpOnly`,
+      ].join("; "), // Send cookies in the Cookie header
+    },
 
-      body: formData, // Send the FormData object as the request body
-      credentials: "include", // Automatically include cookies
-    }
-  );
+    body: formData, // Send the FormData object as the request body
+    credentials: "include", // Automatically include cookies
+  });
 
   if (!response.ok) {
     throw new Error(
