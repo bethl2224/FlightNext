@@ -288,10 +288,12 @@ const Itinerary: React.FC = () => {
           const airports =
             results[1].status === "fulfilled" ? results[1].value : [];
           const citySuggestions = Array.isArray(cities)
-            ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              cities
+            ? cities
                 .slice(0, 5)
-                .map(({ city, country }: any) => `${city}, ${country}`)
+                .map(
+                  ({ city, country }: { city: string; country: string }) =>
+                    `${city}, ${country}`
+                )
             : [];
           const airportSuggestions = Array.isArray(airports)
             ? airports.slice(0, 5).map(({ name }: { name: string }) => name)
