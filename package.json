@@ -2,10 +2,11 @@
   "name": "my-next-app",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev -H 0.0.0.0",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -H 0.0.0.0",
     "lint": "next lint"
   },
   "dependencies": {
@@ -28,7 +29,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@types/next": "^8.0.7",
-    "@types/node": "20.17.28",
+    "@types/node": "^20.17.28",
     "@types/react": "19.0.12",
     "@types/react-dom": "^19",
     "eslint": "^9",
