@@ -322,10 +322,8 @@ export const roomTypePayload = [
 ];
 
 export async function generate_users() {
-  const apiURl = "http://localhost:3000/api";
-
   for (const user of users) {
-    const data = await fetch(`${apiURl}/account/sign-up`, {
+    const data = await fetch(`${process.env.API_URL}/api/account/sign-up`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -339,5 +337,3 @@ export async function generate_users() {
     console.log("****************************");
   }
 }
-
-// generate_users();

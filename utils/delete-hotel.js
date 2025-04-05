@@ -25,15 +25,18 @@ async function deleteBookingOwner(bookingid) {
 
 async function deleteBookingUser(bookingid) {
   try {
-    const res = await fetch("/api/hotel/user/room-booking", {
-      method: "DELETE",
-      headers: {
+    const res = await fetch(
+      `${process.env.API_URL}/api/hotel/user/room-booking`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ bookingId: parseInt(bookingid) }),
         "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({ bookingId: parseInt(bookingid) }),
-      "Content-Type": "application/json",
-    });
+      }
+    );
 
     alert(`User booking ${bookingid} deleted successfully`);
 

@@ -1,7 +1,7 @@
 import { signInAndGetToken } from "./create-hotel.js";
 import { roomTypePayload, user_credentials } from "./generate-user.js";
 import { PrismaClient } from "@prisma/client";
-
+import { apiUrl } from "./hotel-query.js";
 export const prisma = new PrismaClient();
 
 const generateRandomCreditCardNumbers = () => {
@@ -90,7 +90,7 @@ async function createRoomType(el, username, password, hotelId) {
   formData.append("file", Array.isArray(el.file) ? el.file : [el.file]);
   // Send the POST request
   const response = await fetch(
-    `http://localhost:3000/api/hotel/owner/room-type-2`,
+    `${process.env.API_URL}/api/hotel/owner/room-type-2`,
     {
       method: "POST",
 

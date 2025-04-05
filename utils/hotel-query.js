@@ -2,13 +2,16 @@ import { convertDate } from "./helper";
 
 export async function fetchHotel() {
   try {
-    const res = await fetch("/api/hotel/owner/get-hotel", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    });
+    const res = await fetch(
+      `${process.env.API_URL}/api/hotel/owner/get-hotel`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      }
+    );
 
     if (!res.ok) {
       throw new Error("Failed to fetch hotels");
@@ -33,7 +36,9 @@ export const fetchAllRoomType = async () => {
 
 export const fetchRoomTypes = async () => {
   try {
-    const response = await fetch("/api/hotel/owner/get-room-type");
+    const response = await fetch(
+      `${process.env.API_URL}/api/hotel/owner/get-room-type`
+    );
     const data = await response.json();
     return data;
   } catch (error) {
@@ -175,7 +180,7 @@ export async function searchAllMessage(accountid, queueType, role) {
 
 export async function deleteMessage(messageId) {
   try {
-    const response = await fetch("/api/notification", {
+    const response = await fetch(`${process.env.API_URL}/api/notification`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",

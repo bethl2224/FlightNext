@@ -93,8 +93,6 @@ export const getImagesFromDirectory = async (directory) => {
 //   console.log("LogoImages", logoImages);
 // })();
 
-const apiURl = "http://localhost:3000/api";
-
 // Function to sign in and retrieve the access token
 export async function signInAndGetToken(username, password, user = "owner") {
   const payload = {
@@ -104,7 +102,7 @@ export async function signInAndGetToken(username, password, user = "owner") {
   };
 
   try {
-    const response = await fetch(`${apiURl}/account/login`, {
+    const response = await fetch(`${process.env.API_URL}/api/account/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -128,18 +126,21 @@ export async function signInAndGetToken(username, password, user = "owner") {
 }
 async function createHotel(accessToken, refreshToken, hotel) {
   try {
-    const res = await fetch(`${apiURl}/hotel/testing/add_hotel`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`, // Pass the JWT token as Bearer
-        Cookie: [
-          `accessToken=${accessToken}; Path=/; HttpOnly`,
-          `refreshToken=${refreshToken}; Path=/; HttpOnly`,
-        ].join("; "), // Send cookies in the Cookie header
-      },
-      body: JSON.stringify(hotel),
-    });
+    const res = await fetch(
+      `${process.env.API_URL}/api/hotel/testing/add_hotel`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`, // Pass the JWT token as Bearer
+          Cookie: [
+            `accessToken=${accessToken}; Path=/; HttpOnly`,
+            `refreshToken=${refreshToken}; Path=/; HttpOnly`,
+          ].join("; "), // Send cookies in the Cookie header
+        },
+        body: JSON.stringify(hotel),
+      }
+    );
 
     if (!res.ok) {
       throw new Error(`Failed to create hotel: ${res.statusText}`);
