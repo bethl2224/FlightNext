@@ -3,6 +3,7 @@ import Image from "next/image"; // Import Next.js Image component
 import SignInModal from "@pages/auth/SignIn";
 import SignUpModal from "@pages/auth/SignUp";
 import SignOutModal from "@pages/auth/SignOut";
+import HotelModal from "@pages/hotel-page/HotelModal";
 import { useEffect, useState } from "react";
 import LikeList from "@pages/hotel-page/user/LikeList";
 import NotificationModal from "@pages/main/Notification";
@@ -116,6 +117,8 @@ function Header() {
                 >
                   Check Flights
                 </Link>
+
+                <HotelModal />
               </div>
             )}
           </div>
@@ -144,6 +147,8 @@ function Header() {
                 >
                   Hotel Listings
                 </Link>
+
+                <HotelModal />
               </div>
             )}
           </div>

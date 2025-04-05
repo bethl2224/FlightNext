@@ -1,4 +1,4 @@
-import { fetchAllRoomType } from "@/utils/hotel-query";
+import { fetchAllRoomType, validateDate } from "@/utils/hotel-query";
 import { Hotel } from "@pages/hotel-page/visitor/HotelListings";
 interface DropdownProps {
   options: string[];
@@ -27,6 +27,12 @@ const Dropdown: React.FC<DropdownProps> = ({
       if (res) {
         onSetHotel(res[0]);
       }
+      return null;
+    }
+    const role = sessionStorage.getItem("role") || "visitor";
+
+    if (!validateDate(checkInDate, checkOutDate, role)) {
+      onSetHotel([]);
       return null;
     }
 

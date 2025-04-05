@@ -1,3 +1,4 @@
+import { type } from "os";
 import { convertDate } from "./helper";
 export async function fetchHotel() {
   try {
@@ -193,12 +194,12 @@ export async function deleteMessage(messageId) {
   }
 }
 
-export function validateDate(checkInDate, checkOutDate) {
+export function validateDate(checkInDate, checkOutDate, role = "visitor") {
   let checkInDateObj, checkOutDateObj;
-  if (checkInDate) {
+  if (checkInDate && typeof checkInDate === "string") {
     checkInDateObj = convertDate(checkInDate);
   }
-  if (checkOutDate) {
+  if (checkOutDate && typeof checkOutDate === "string") {
     checkOutDateObj = new convertDate(checkOutDate);
   }
 
@@ -210,7 +211,7 @@ export function validateDate(checkInDate, checkOutDate) {
   // console.log("checkInDate", checkInDate);
   // console.log("checkOutDate", checkOutDate);
 
-  if (checkInDate && checkInDateObj < today) {
+  if (role !== "owner" && checkInDate && checkInDateObj < today) {
     alert("Check-in date cannot be earlier than today.");
     return false;
   }
