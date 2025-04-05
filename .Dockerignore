@@ -1,0 +1,7 @@
+.next
+node_modules
+1postman_collection.json
+2swagger_collection.json
+package-lock.json
+connect-psql.sh
+README.md
