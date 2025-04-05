@@ -1,0 +1,1113 @@
+{
+	"info": {
+		"_postman_id": "568bd241-c644-489a-9683-ddec9da7453f",
+		"name": "CSC309PP1-EndpointsTEST",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "41487007",
+		"_collection_link": "https://csc309api-end-points.postman.co/workspace/New-Team-Workspace~5da9258f-2a97-4ae0-b033-5d6b05b1b386/collection/41487007-568bd241-c644-489a-9683-ddec9da7453f?action=share&source=collection_link&creator=41487007"
+	},
+	"item": [
+		{
+			"name": "account",
+			"item": [
+				{
+					"name": "Sign-up",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Mulan\",\r\n    \"lastName\": \"Hua\",\r\n    \"phoneNumber\": \"123-456-7890\",\r\n    \"email\": \"mulan12345@example.com\",\r\n    \"username\": \"mulan.2222\",\r\n    \"password\": \"mul666888\"\r\n}\r\n\r\n\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{appURL}}/api/account/sign-up",
+							"host": [
+								"{{appURL}}"
+							],
+							"path": [
+								"api",
+								"account",
+								"sign-up"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \"username\": \"mulan.2222\",\r\n  \"password\": \"mul666888\"\r\n\r\n}\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{appURL}}/api/account/login",
+							"host": [
+								"{{appURL}}"
+							],
+							"path": [
+								"api",
+								"account",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit-Profile",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"phoneNumber\": \"123-456-7890\",\r\n    \"email\": \"mulan1225@example.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{appURL}}/api/account/edit-profile",
+							"host": [
+								"{{appURL}}"
+							],
+							"path": [
+								"api",
+								"account",
+								"edit-profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{appURL}}/api/account/logout",
+							"host": [
+								"{{appURL}}"
+							],
+							"path": [
+								"api",
+								"account",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh-token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{appURL}}/api/account/refresh-token",
+							"host": [
+								"{{appURL}}"
+							],
+							"path": [
+								"api",
+								"account",
+								"refresh-token"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "flights",
+			"item": [
+				{
+					"name": "Get-flight-details",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{appURL}}/api/flights/details?origin=Toronto&destination=Brussels&date=2024-11-17&flight_type=round_trip&round_trip_date=2024-11-17",
+							"host": [
+								"{{appURL}}"
+							],
+							"path": [
+								"api",
+								"flights",
+								"details"
+							],
+							"query": [
+								{
+									"key": "origin",
+									"value": "Toronto",
+									"description": "Test Case 1 (returns only both one way and round trips)"
+								},
+								{
+									"key": "destination",
+									"value": "Brussels",
+									"description": "Test Case 1"
+								},
+								{
+									"key": "date",
+									"value": "2024-11-17",
+									"description": "Test Case 1"
+								},
+								{
+									"key": "flight_type",
+									"value": "round_trip",
+									"description": "Test Case 1"
+								},
+								{
+									"key": "round_trip_date",
+									"value": "2024-11-17"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get-flight-cities",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{appURL}}/api/flights/cities?city=Chicago",
+							"host": [
+								"{{appURL}}"
+							],
+							"path": [
+								"api",
+								"flights",
+								"cities"
+							],
+							"query": [
+								{
+									"key": "city",
+									"value": "Chicago"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get-flight-airports",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{appURL}}/api/flights/airports?airport=toronto",
+							"host": [
+								"{{appURL}}"
+							],
+							"path": [
+								"api",
+								"flights",
+								"airports"
+							],
+							"query": [
+								{
+									"key": "airport",
+									"value": "toronto"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "hotel",
+			"item": [
+				{
+					"name": "Owner",
+					"item": [
+						{
+							"name": "Create-room-type",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"roomType\": \"Hello Kitty\",\n  \"images\": [\n    {\n      \"url\": \"https://example.com/image1.jpg\"\n    },\n    {\n      \"url\": \"https://example.com/image2.jpg\"\n    }\n  ],\n  \"pricePerNight\": 150.00,\n  \"amenities\": \"WiFi, Air Conditioning, Breakfast\",\n  \"roomCapacity\": 15,\n  \"hotelId\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{appURL}}/api/hotel/owner/room-type",
+									"host": [
+										"{{appURL}}"
+									],
+									"path": [
+										"api",
+										"hotel",
+										"owner",
+										"room-type"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get-room-type",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{appURL}}/api/hotel/owner/room-type?roomType=Family&checkInDate=2025-03-10&hotelId=1&checkOutDate=2025-03-15",
+									"host": [
+										"{{appURL}}"
+									],
+									"path": [
+										"api",
+										"hotel",
+										"owner",
+										"room-type"
+									],
+									"query": [
+										{
+											"key": "roomType",
+											"value": "Family"
+										},
+										{
+											"key": "checkInDate",
+											"value": "2025-03-10"
+										},
+										{
+											"key": "hotelId",
+											"value": "1"
+										},
+										{
+											"key": "checkOutDate",
+											"value": "2025-03-15"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get-room-booking",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{appURL}}/api/hotel/owner/room-booking?roomType=Family&checkInDate=2025-03-01&hotelId=1&checkOutDate=2025-03-29",
+									"host": [
+										"{{appURL}}"
+									],
+									"path": [
+										"api",
+										"hotel",
+										"owner",
+										"room-booking"
+									],
+									"query": [
+										{
+											"key": "roomType",
+											"value": "Family"
+										},
+										{
+											"key": "checkInDate",
+											"value": "2025-03-01"
+										},
+										{
+											"key": "hotelId",
+											"value": "1"
+										},
+										{
+											"key": "checkOutDate",
+											"value": "2025-03-29"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete-room-booking",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{appURL}}/api/hotel/owner/room-booking?bookingId=23",
+									"host": [
+										"{{appURL}}"
+									],
+									"path": [
+										"api",
+										"hotel",
+										"owner",
+										"room-booking"
+									],
+									"query": [
+										{
+											"key": "bookingId",
+											"value": "23"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Query-room-type-available",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{appURL}}/api/hotel/owner/room-type?roomType=Family&checkInDate=2025-03-25&checkOutDate=2025-03-29&hotelId=1",
+									"host": [
+										"{{appURL}}"
+									],
+									"path": [
+										"api",
+										"hotel",
+										"owner",
+										"room-type"
+									],
+									"query": [
+										{
+											"key": "roomType",
+											"value": "Family"
+										},
+										{
+											"key": "checkInDate",
+											"value": "2025-03-25"
+										},
+										{
+											"key": "checkOutDate",
+											"value": "2025-03-29"
+										},
+										{
+											"key": "hotelId",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "UPDATE-room-avail",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\"roomType\": \"Family\",\n\"hotelId\": 1,\n\"roomCapacity\": 100\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{appURL}}/api/hotel/owner/room-type",
+									"host": [
+										"{{appURL}}"
+									],
+									"path": [
+										"api",
+										"hotel",
+										"owner",
+										"room-type"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "User",
+					"item": [
+						{
+							"name": "add-hotel",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": 3\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{appURL}}/api/hotel/user/add-hotel",
+									"host": [
+										"{{appURL}}"
+									],
+									"path": [
+										"api",
+										"hotel",
+										"user",
+										"add-hotel"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create-room-booking",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n      \"creditCardInfo\": \"5000-00adsfa0-0000-0000\",\n      \"checkInDate\": \"2025-03-25\",\n       \"checkOutDate\": \"2025-03-29\",\n      \"hotelId\": 1,\n      \"roomType\":\"Family\"\n\n    }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{appURL}}/api/hotel/user/room-booking",
+									"host": [
+										"{{appURL}}"
+									],
+									"path": [
+										"api",
+										"hotel",
+										"user",
+										"room-booking"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create-hotel",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"Frozen Palace2\",\n  \"logo\": \"https://example.com/logo.png\",\n  \"address\": \"123 Main Street\",\n  \"city\": \"Athens\",\n  \"country\": \"Greece\",\n  \"starRating\": 5,\n  \"hotelImages\":  [\n      {\n        \"url\": \"https://example.com/image1.jpg\"\n      },\n      {\n        \"url\": \"https://example.com/image2.jpg\"\n      }\n    ]\n  }\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{appURL}}/api/hotel/user/create-hotel",
+									"host": [
+										"{{appURL}}"
+									],
+									"path": [
+										"api",
+										"hotel",
+										"user",
+										"create-hotel"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "visitor",
+					"item": [
+						{
+							"name": "hotel-info",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{appURL}}/api/hotel/visitor/hotel-info?id=1",
+									"host": [
+										"{{appURL}}"
+									],
+									"path": [
+										"api",
+										"hotel",
+										"visitor",
+										"hotel-info"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "room-available",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{appURL}}/api/hotel/visitor/room-available?hotelId=2&checkInDate=2025-03-10&checkOutDate=2025-03-15",
+									"host": [
+										"{{appURL}}"
+									],
+									"path": [
+										"api",
+										"hotel",
+										"visitor",
+										"room-available"
+									],
+									"query": [
+										{
+											"key": "hotelId",
+											"value": "2"
+										},
+										{
+											"key": "checkInDate",
+											"value": "2025-03-10"
+										},
+										{
+											"key": "checkOutDate",
+											"value": "2025-03-15"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "search-hotel-and-available",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{appURL}}/api/hotel/visitor?starRating=5&priceRangeStart=100.00&priceRangeEnd=300.00&checkInDate=2023-10-01&checkOutDate=2023-10-10&city=New York&name=Holiday Inn",
+									"host": [
+										"{{appURL}}"
+									],
+									"path": [
+										"api",
+										"hotel",
+										"visitor"
+									],
+									"query": [
+										{
+											"key": "starRating",
+											"value": "5"
+										},
+										{
+											"key": "priceRangeStart",
+											"value": "100.00"
+										},
+										{
+											"key": "priceRangeEnd",
+											"value": "300.00"
+										},
+										{
+											"key": "checkInDate",
+											"value": "2023-10-01"
+										},
+										{
+											"key": "checkOutDate",
+											"value": "2023-10-10"
+										},
+										{
+											"key": "city",
+											"value": "New York"
+										},
+										{
+											"key": "name",
+											"value": "Holiday Inn"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "bookings",
+			"item": [
+				{
+					"name": "Create-Itinerary",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n     \"flights\": [\r\n    {\r\n      \"firstName\": \"Mulan\",\r\n      \"lastName\": \"Hua\",\r\n      \"email\": \"mulan12345@example.com\",\r\n      \"passportNumber\": \"1232239934\",\r\n      \"flightIds\": [\r\n        \"ee372818-cd33-4886-9088-d601947777a2\",\r\n        \"bcf039ec-246c-472d-9c79-aeb4821f8a2c\"\r\n      ]\r\n    }\r\n  ],\r\n\r\n\r\n  \"hotelBookings\": [\r\n    {\r\n      \"creditCardInfo\": \"3344444900\",\r\n      \"checkInDate\": \"2025-03-12\",\r\n      \"checkOutDate\": \"2025-03-18\",\r\n      \"roomType\": \"Family\",\r\n      \"hotelId\": 1\r\n    }\r\n  ] \r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{appURL}}/api/bookings/user/itinerary",
+							"host": [
+								"{{appURL}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"user",
+								"itinerary"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get-Itinerary",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"hotelBookings\": [\r\n    {\r\n      \"creditCardInfo\": \"4111111111111111\",\r\n      \"checkInDate\": \"2025-03-10\",\r\n      \"checkOutDate\": \"2025-03-15\",\r\n      \"roomType\": \"Family\",\r\n      \"hotelId\": 1\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{appURL}}/api/bookings/user/itinerary",
+							"host": [
+								"{{appURL}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"user",
+								"itinerary"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get-flights-info",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{appURL}}/api/bookings/user/flights-info?lastName=Liang&bookingReference=85F4C1&itineraryId=49",
+							"host": [
+								"{{appURL}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"user",
+								"flights-info"
+							],
+							"query": [
+								{
+									"key": "lastName",
+									"value": "Liang",
+									"description": "Login as User 3 Angela, get the access token"
+								},
+								{
+									"key": "bookingReference",
+									"value": "85F4C1"
+								},
+								{
+									"key": "itineraryId",
+									"value": "49"
+								},
+								{
+									"key": "lastName",
+									"value": null,
+									"description": "Fill out the flight booking info you get from the previous itinerary",
+									"disabled": true
+								},
+								{
+									"key": "bookingReference",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "itineraryId",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get-flight-suggests",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{appURL}}/api/bookings/user/flight-suggests?hotelId=3&origin=Toronto&date=2024-11-18",
+							"host": [
+								"{{appURL}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"user",
+								"flight-suggests"
+							],
+							"query": [
+								{
+									"key": "hotelId",
+									"value": "3"
+								},
+								{
+									"key": "origin",
+									"value": "Toronto"
+								},
+								{
+									"key": "date",
+									"value": "2024-11-18"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get-hotel-suggests",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{appURL}}/api/bookings/user/hotel-suggests?city=New York&country=United States",
+							"host": [
+								"{{appURL}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"user",
+								"hotel-suggests"
+							],
+							"query": [
+								{
+									"key": "city",
+									"value": "New York"
+								},
+								{
+									"key": "country",
+									"value": "United States"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get-Itinerary-ByID",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{appURL}}/api/bookings/user/itinerary/:id",
+							"host": [
+								"{{appURL}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"user",
+								"itinerary",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "39"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel-hotel-booking",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{appURL}}/api/bookings/user/hotel-cancel/:id",
+							"host": [
+								"{{appURL}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"user",
+								"hotel-cancel",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "30"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel-itinerary-ByID",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{appURL}}/api/bookings/user/itinerary/:id",
+							"host": [
+								"{{appURL}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"user",
+								"itinerary",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "48"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel-flights",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{appURL}}/api/bookings/user/flight-cancel?lastName=Liang&bookingReference=85F4C1&itineraryId=49",
+							"host": [
+								"{{appURL}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"user",
+								"flight-cancel"
+							],
+							"query": [
+								{
+									"key": "lastName",
+									"value": "Liang"
+								},
+								{
+									"key": "bookingReference",
+									"value": "85F4C1"
+								},
+								{
+									"key": "itineraryId",
+									"value": "49"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "notification",
+			"item": [
+				{
+					"name": "Get-notification-id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{appURL}}/api/notification?accountId=1&messageType=HotelBookingRecord",
+							"host": [
+								"{{appURL}}"
+							],
+							"path": [
+								"api",
+								"notification"
+							],
+							"query": [
+								{
+									"key": "accountId",
+									"value": "1"
+								},
+								{
+									"key": "messageType",
+									"value": "HotelBookingRecord"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete-notification-id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"messageId\": 15\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{appURL}}/api/notification",
+							"host": [
+								"{{appURL}}"
+							],
+							"path": [
+								"api",
+								"notification"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "Url",
+			"value": "http://localhost:3000",
+			"type": "default"
+		},
+		{
+			"key": "apiKey",
+			"value": "9dae136fcd257b78d9945009d7383cb43011e62bd17905b452e9f322c85f6017",
+			"type": "default"
+		},
+		{
+			"key": "appURL",
+			"value": "http://localhost:3000",
+			"type": "default"
+		}
+	]
+}

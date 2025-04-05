@@ -1,0 +1,33 @@
+[
+    {
+      "roomType": "Deluxe Suite",
+      "amenities": "WiFi, TV, Air Conditioning, Mini Bar",
+      "pricePerNight": 150.00,
+      "roomAvailability": true
+    },
+    {
+      "roomType": "Standard Room",
+      "amenities": "WiFi, TV, Air Conditioning",
+      "pricePerNight": 100.00,
+      "roomAvailability": true
+    },
+    {
+      "roomType": "Executive Suite",
+      "amenities": "WiFi, TV, Air Conditioning, Mini Bar, Work Desk",
+      "pricePerNight": 200.00,
+      "roomAvailability": false
+    },
+    {
+      "roomType": "Family Room",
+      "amenities": "WiFi, TV, Air Conditioning, Kitchenette, Extra Bed",
+      "pricePerNight": 180.00,
+      "roomAvailability": true
+    },
+    {
+      "roomType": "Presidential Suite",
+      "amenities": "WiFi, TV, Air Conditioning, Mini Bar, Jacuzzi, Butler Service",
+      "pricePerNight": 500.00,
+      "roomAvailability": true
+    }
+  ]
+  

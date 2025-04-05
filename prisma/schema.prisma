@@ -1,0 +1,181 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+
+generator client {
+ provider = "prisma-client-js"
+}
+
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model Account {
+ id             Int         @id @default(autoincrement())
+ firstName      String
+ lastName       String
+ profilePicture String? // Optional field
+ phoneNumber    String
+ email          String      @unique
+ username       String      @unique
+ password       String
+ role           String // owner, visitor, or something
+ createdAt      DateTime    @default(now())
+ user           User?
+ hotelOwner     HotelOwner?
+ messages       Message[]
+}
+
+
+
+model Hotel {
+ id         Int             @id @default(autoincrement())
+ name       String
+ starRating Int
+ address    String
+ logo       String?
+ createdAt  DateTime        @default(now())
+ updatedAt  DateTime        @updatedAt
+ ownerId    Int?
+ city       String?
+ country    String?
+ location   Location?       @relation(fields: [city, country], references: [city, country])
+ images     HotelImage[]
+ owner      HotelOwner?     @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+ roomTypes  HotelRoomType[]
+ users      User[]
+}
+
+
+model User {
+ id        Int                  @id @default(autoincrement())
+ account   Account            @relation(fields: [accountId], references: [id],  onDelete: Cascade)
+ accountId Int              @unique
+ hotel     Hotel[]
+ bookings  HotelBookingRecord[]
+ itineraries Itinerary[]
+}
+
+
+model HotelOwner {
+ id        Int     @id @default(autoincrement())
+ account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+ accountId Int     @unique
+ hotel     Hotel[]
+}
+
+
+// weak entity hotelRoom
+model HotelRoomType {
+ roomType         String        
+ pricePerNight    Float
+ images           HotelRoomImage[]
+ amenities        String
+ roomCapacity Int
+ createdAt        DateTime         @default(now())
+ updatedAt        DateTime         @updatedAt
+ hotelId          Int
+ hotel            Hotel?           @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+ bookings         HotelBookingRecord[]
+
+
+ @@id([hotelId, roomType])
+}
+
+
+model HotelBookingRecord {
+ id             Int      @id @default(autoincrement())
+ creditCardInfo String
+ checkInDate    DateTime
+ checkOutDate   DateTime
+ roomType       String
+ hotelId        Int
+ HotelRoomType  HotelRoomType? @relation(fields: [hotelId, roomType], references: [hotelId, roomType], onDelete: Cascade)
+ userId         Int? // Foreign key to Account
+ itineraryId    Int?
+ user           User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+ itinerary      Itinerary? @relation(fields: [itineraryId], references: [id], onDelete: Cascade)
+ createdAt      DateTime @default(now())
+ updatedAt      DateTime @updatedAt
+}
+
+
+model HotelImage {
+ id      Int    @id @default(autoincrement())
+ url     String
+ hotelId Int
+ hotel   Hotel  @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+}
+
+
+model HotelRoomImage {
+ id            Int           @id @default(autoincrement())
+ url           String
+ hotelId       Int
+ roomType      String
+ HotelRoomType HotelRoomType @relation(fields: [hotelId, roomType], references: [hotelId, roomType], onDelete: Cascade)
+}
+
+model FlightInfo{
+  lastName        String
+  bookingReference String   
+  itineraryId     Int
+  itinerary       Itinerary  @relation(fields: [itineraryId], references: [id], onDelete: Cascade)
+  @@id([lastName, bookingReference])
+
+}
+
+model Itinerary {
+ id                Int                 @id @default(autoincrement())
+ userId            Int
+ user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+ flights           FlightInfo[]
+ hotelBookings     HotelBookingRecord[]
+ createdAt         DateTime            @default(now())
+ updatedAt         DateTime            @updatedAt
+}
+
+ model Location {
+ city      String
+ country   String
+ airports  Airport[]
+ hotels    Hotel[]
+ @@id([city, country])
+}
+
+
+model Airport {
+ id          String   @id @default(uuid())
+ code        String   @unique // IATA or ICAO airport code (e.g., 'JFK')
+ name        String   // Full name of the airport (e.g., 'John F. Kennedy International Airport')
+ city        String
+ country     String
+ location    Location @relation(fields: [city, country], references: [city, country])
+}
+
+// Current default type is Itinerary, BookingRecord
+model MessageQueue {
+  id        Int      @id @default(autoincrement())
+  name String @unique
+  createdAt DateTime @default(now())
+  messages Message[]
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  accountId Int 
+  account Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  messageQueueId Int
+  messageQueue MessageQueue @relation(fields: [messageQueueId], references: [id])
+  payload String
+  role String ?
+  createdAt DateTime @default(now())
+}
+

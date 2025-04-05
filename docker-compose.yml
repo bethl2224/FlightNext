@@ -1,0 +1,57 @@
+services:
+  db:
+    image: postgres:13
+    container_name: app-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mysecurepassword
+      POSTGRES_DB: appDB
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: [
+        "sh",
+        "-c",
+        "sleep 3 && \
+        npx prisma migrate dev --name init || true && \
+        sleep 3 && \
+        node utils/fetch-city.js || true && \
+        sleep 3 && \
+        node utils/fetch-airport.js || true && \
+        sleep 3 && \
+        sh ./fake-data/s-docker.sh || true; \
+        npm run start",
+      ]
+    container_name: app
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+      - "5555:5555" # Map Prisma Studio's port
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://postgres:mysecurepassword@db:5432/appDB?schema=public
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  pgdata:

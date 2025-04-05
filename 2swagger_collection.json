@@ -1,0 +1,1144 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "CSC309PP1-EndpointsTEST",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "noauthAuth": {
+        "type": "http",
+        "scheme": "noauth"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "account"
+    },
+    {
+      "name": "flights"
+    },
+    {
+      "name": "hotel"
+    },
+    {
+      "name": "hotel > Owner"
+    },
+    {
+      "name": "hotel > User"
+    },
+    {
+      "name": "hotel > visitor"
+    },
+    {
+      "name": "bookings"
+    },
+    {
+      "name": "notification"
+    }
+  ],
+  "paths": {
+    "/api/account/sign-up": {
+      "post": {
+        "tags": ["account"],
+        "summary": "Sign-up",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "firstName": "Mulan",
+                  "lastName": "Hua",
+                  "phoneNumber": "123-456-7890",
+                  "email": "mulan12345@example.com",
+                  "username": "mulan.2222",
+                  "password": "mul666888"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "noauthAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/account/login": {
+      "post": {
+        "tags": ["account"],
+        "summary": "Login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "username": "mulan.2222",
+                  "password": "mul666888"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "noauthAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/account/edit-profile": {
+      "patch": {
+        "tags": ["account"],
+        "summary": "Edit-Profile",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "phoneNumber": "123-456-7890",
+                  "email": "mulan1225@example.com"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "noauthAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/account/logout": {
+      "post": {
+        "tags": ["account"],
+        "summary": "Logout",
+        "requestBody": {
+          "content": {}
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/account/refresh-token": {
+      "post": {
+        "tags": ["account"],
+        "summary": "Refresh-token",
+        "requestBody": {
+          "content": {}
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/flights/details": {
+      "get": {
+        "tags": ["flights"],
+        "summary": "Get-flight-details",
+        "security": [
+          {
+            "noauthAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "origin",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Test Case 1 (returns only both one way and round trips)",
+            "example": "Toronto"
+          },
+          {
+            "name": "destination",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Test Case 1",
+            "example": "Brussels"
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Test Case 1",
+            "example": "2024-11-17"
+          },
+          {
+            "name": "flight_type",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Test Case 1",
+            "example": "round_trip"
+          },
+          {
+            "name": "round_trip_date",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "example": "2024-11-17"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/flights/cities": {
+      "get": {
+        "tags": ["flights"],
+        "summary": "Get-flight-cities",
+        "security": [
+          {
+            "noauthAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "city",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "example": "Chicago"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/flights/airports": {
+      "get": {
+        "tags": ["flights"],
+        "summary": "Get-flight-airports",
+        "security": [
+          {
+            "noauthAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "airport",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "example": "toronto"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/hotel/owner/room-type": {
+      "post": {
+        "tags": ["hotel > Owner"],
+        "summary": "Create-room-type",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "roomType": "Hello Kitty",
+                  "images": [
+                    {
+                      "url": "https://example.com/image1.jpg"
+                    },
+                    {
+                      "url": "https://example.com/image2.jpg"
+                    }
+                  ],
+                  "pricePerNight": 150,
+                  "amenities": "WiFi, Air Conditioning, Breakfast",
+                  "roomCapacity": 15,
+                  "hotelId": 1
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "noauthAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["hotel > Owner"],
+        "summary": "Query-room-type-available",
+        "security": [
+          {
+            "noauthAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "roomType",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "example": "Family"
+          },
+          {
+            "name": "checkInDate",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "example": "2025-03-25"
+          },
+          {
+            "name": "checkOutDate",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "example": "2025-03-29"
+          },
+          {
+            "name": "hotelId",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "example": "1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["hotel > Owner"],
+        "summary": "UPDATE-room-avail",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "roomType": "Family",
+                  "hotelId": 1,
+                  "roomCapacity": 100
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "noauthAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/hotel/owner/room-booking": {
+      "get": {
+        "tags": ["hotel > Owner"],
+        "summary": "Get-room-booking",
+        "security": [
+          {
+            "noauthAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "roomType",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "example": "Family"
+          },
+          {
+            "name": "checkInDate",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "example": "2025-03-01"
+          },
+          {
+            "name": "hotelId",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "example": "1"
+          },
+          {
+            "name": "checkOutDate",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "example": "2025-03-29"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["hotel > Owner"],
+        "summary": "Delete-room-booking",
+        "security": [
+          {
+            "noauthAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "bookingId",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "example": "23"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/hotel/user/add-hotel": {
+      "post": {
+        "tags": ["hotel > User"],
+        "summary": "add-hotel",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "id": 3
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "noauthAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/hotel/user/room-booking": {
+      "post": {
+        "tags": ["hotel > User"],
+        "summary": "create-room-booking",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "creditCardInfo": "5000-00adsfa0-0000-0000",
+                  "checkInDate": "2025-03-25",
+                  "checkOutDate": "2025-03-29",
+                  "hotelId": 1,
+                  "roomType": "Family"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "noauthAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/hotel/user/create-hotel": {
+      "post": {
+        "tags": ["hotel > User"],
+        "summary": "create-hotel",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "name": "Frozen Palace2",
+                  "logo": "https://example.com/logo.png",
+                  "address": "123 Main Street",
+                  "city": "Athens",
+                  "country": "Greece",
+                  "starRating": 5,
+                  "hotelImages": [
+                    {
+                      "url": "https://example.com/image1.jpg"
+                    },
+                    {
+                      "url": "https://example.com/image2.jpg"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "noauthAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/hotel/visitor/hotel-info": {
+      "get": {
+        "tags": ["hotel > visitor"],
+        "summary": "hotel-info",
+        "security": [
+          {
+            "noauthAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "example": "1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/hotel/visitor/room-available": {
+      "get": {
+        "tags": ["hotel > visitor"],
+        "summary": "room-available",
+        "security": [
+          {
+            "noauthAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "hotelId",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "example": "2"
+          },
+          {
+            "name": "checkInDate",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "example": "2025-03-10"
+          },
+          {
+            "name": "checkOutDate",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "example": "2025-03-15"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/hotel/visitor": {
+      "get": {
+        "tags": ["hotel > visitor"],
+        "summary": "search-hotel-and-available",
+        "security": [
+          {
+            "noauthAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "starRating",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "example": "5"
+          },
+          {
+            "name": "priceRangeStart",
+            "in": "query",
+            "schema": {
+              "type": "number"
+            },
+            "example": "100.00"
+          },
+          {
+            "name": "priceRangeEnd",
+            "in": "query",
+            "schema": {
+              "type": "number"
+            },
+            "example": "300.00"
+          },
+          {
+            "name": "checkInDate",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "example": "2023-10-01"
+          },
+          {
+            "name": "checkOutDate",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "example": "2023-10-10"
+          },
+          {
+            "name": "city",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "example": "New York"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "example": "Holiday Inn"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/bookings/user/itinerary": {
+      "post": {
+        "tags": ["bookings"],
+        "summary": "Create-Itinerary",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "flights": [
+                    {
+                      "firstName": "Mulan",
+                      "lastName": "Hua",
+                      "email": "mulan12345@example.com",
+                      "passportNumber": "1232239934",
+                      "flightIds": [
+                        "ee372818-cd33-4886-9088-d601947777a2",
+                        "bcf039ec-246c-472d-9c79-aeb4821f8a2c"
+                      ]
+                    }
+                  ],
+                  "hotelBookings": [
+                    {
+                      "creditCardInfo": "3344444900",
+                      "checkInDate": "2025-03-12",
+                      "checkOutDate": "2025-03-18",
+                      "roomType": "Family",
+                      "hotelId": 1
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "noauthAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["bookings"],
+        "summary": "Get-Itinerary",
+        "security": [
+          {
+            "noauthAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/bookings/user/flights-info": {
+      "get": {
+        "tags": ["bookings"],
+        "summary": "Get-flights-info",
+        "security": [
+          {
+            "noauthAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "lastName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Fill out the flight booking info you get from the previous itinerary",
+            "example": "Liang"
+          },
+          {
+            "name": "bookingReference",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "example": "85F4C1"
+          },
+          {
+            "name": "itineraryId",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "example": "49"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/bookings/user/flight-suggests": {
+      "get": {
+        "tags": ["bookings"],
+        "summary": "Get-flight-suggests",
+        "security": [
+          {
+            "noauthAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "hotelId",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "example": "3"
+          },
+          {
+            "name": "origin",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "example": "Toronto"
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "example": "2024-11-18"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/bookings/user/hotel-suggests": {
+      "get": {
+        "tags": ["bookings"],
+        "summary": "Get-hotel-suggests",
+        "security": [
+          {
+            "noauthAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "city",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "example": "New York"
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "example": "United States"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/bookings/user/itinerary/{id}": {
+      "get": {
+        "tags": ["bookings"],
+        "summary": "Get-Itinerary-ByID",
+        "security": [
+          {
+            "noauthAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "example": "39"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["bookings"],
+        "summary": "Cancel-itinerary-ByID",
+        "security": [
+          {
+            "noauthAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "example": "48"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/bookings/user/hotel-cancel/{id}": {
+      "delete": {
+        "tags": ["bookings"],
+        "summary": "Cancel-hotel-booking",
+        "security": [
+          {
+            "noauthAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "example": "30"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/bookings/user/flight-cancel": {
+      "delete": {
+        "tags": ["bookings"],
+        "summary": "Cancel-flights",
+        "security": [
+          {
+            "noauthAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "lastName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "example": "Liang"
+          },
+          {
+            "name": "bookingReference",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "example": "85F4C1"
+          },
+          {
+            "name": "itineraryId",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "example": "49"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/notification": {
+      "get": {
+        "tags": ["notification"],
+        "summary": "Get-notification-id",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "example": "1"
+          },
+          {
+            "name": "messageType",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "example": "HotelBookingRecord"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["notification"],
+        "summary": "Delete-notification-id",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    }
+  }
+}
