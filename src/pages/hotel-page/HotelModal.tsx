@@ -104,8 +104,8 @@ const HotelModal: React.FC = () => {
         console.log("Hotel created successfully:", result);
         setIsOpen(false);
       } else {
-        console.error("Error creating hotel:", res.statusText);
         alert("Error creating hotel");
+        console.error("Error creating hotel:", res.statusText);
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -115,7 +115,6 @@ const HotelModal: React.FC = () => {
         alert("Error creating hotel");
         console.error("Error creating hotel:", error);
       }
-      alert("Error creating hotel");
     }
   };
 
