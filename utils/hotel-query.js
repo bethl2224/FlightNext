@@ -1,5 +1,3 @@
-import { convertDate } from "./helper";
-
 export async function fetchHotel() {
   try {
     const res = await fetch("/api/hotel/owner/get-hotel", {
