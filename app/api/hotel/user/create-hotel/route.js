@@ -77,7 +77,7 @@ export async function POST(request) {
           },
         });
       }
-      //Add owner id
+      //update the hotel owner with the new hotel
       updatedOwner = await prisma.hotelOwner.update({
         where: {
           id: newOwner.id,
