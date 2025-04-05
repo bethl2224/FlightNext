@@ -1,6 +1,6 @@
 import { convertDate } from "./helper";
 
-export const apiURl = "http://localhost:3000/api";
+export const apiURl = "http://app:3000/api";
 
 export async function fetchHotel() {
   try {
