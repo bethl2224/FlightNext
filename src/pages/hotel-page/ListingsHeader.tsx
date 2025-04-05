@@ -1,10 +1,5 @@
 "use client";
-import {
-  apiURl,
-  searchHotelInfo,
-  fetchHotel,
-  validateDate,
-} from "@utils/hotel-query";
+import { searchHotelInfo, fetchHotel, validateDate } from "@utils/hotel-query";
 import { useState, useEffect } from "react";
 import { Hotel } from "./visitor/HotelListings";
 import { fetchRoomTypes } from "@utils/hotel-query";

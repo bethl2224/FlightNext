@@ -2,7 +2,6 @@ import React from "react";
 import PriceRangeSlider from "./PriceRangeSlider";
 import StarRating from "./StarRating";
 import { useState, useEffect } from "react";
-import { apiURl } from "@/utils/hotel-query";
 import { searchHotelInfo } from "@/utils/hotel-query";
 interface SidebarProps {
   city: string;
