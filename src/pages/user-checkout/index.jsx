@@ -2,13 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Header from "@pages/main/Header";
 import Footer from "@pages/main/Footer";
-import {useRouter} from "next/router";
+import { useRouter } from "next/router";
 import jsPDF from "jspdf";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const CheckoutPage = () => {
-
   const router = useRouter();
   const [itinerary, setItinerary] = useState(null);
   const [creditCardNumber, setCreditCardNumber] = useState("");
@@ -16,44 +15,43 @@ const CheckoutPage = () => {
   const [cvv, setCvv] = useState("");
   const [billingAddress, setBillingAddress] = useState("");
 
-    // Error states for validation
-    const [creditCardError, setCreditCardError] = useState("");
-    const [expiryDateError, setExpiryDateError] = useState("");
-    const [cvvError, setCvvError] = useState("");
-    const [billingAddressError, setBillingAddressError] = useState("");
+  // Error states for validation
+  const [creditCardError, setCreditCardError] = useState("");
+  const [expiryDateError, setExpiryDateError] = useState("");
+  const [cvvError, setCvvError] = useState("");
+  const [billingAddressError, setBillingAddressError] = useState("");
 
   const searchParams = useSearchParams();
   const itineraryId = searchParams.get("itineraryId");
 
-
-  
   const validateExpiryDate = (expiryDate) => {
     const expiryRegex = /^(0[1-9]|1[0-2])\/\d{4}$/; // MM/YYYY format
     if (!expiryRegex.test(expiryDate)) {
       return false; // Invalid format
     }
-  
+
     const [month, year] = expiryDate.split("/").map(Number);
     const currentDate = new Date();
     const currentMonth = currentDate.getMonth() + 1; // Months are 0-based
     const currentYear = currentDate.getFullYear();
-  
+
     // Check if the expiry date is in the past
     if (year < currentYear || (year === currentYear && month < currentMonth)) {
       return false; // Expired
     }
-  
+
     return true; // Valid expiry date
   };
-  
 
   useEffect(() => {
     const fetchItinerary = async () => {
       try {
-        const response = await fetch(`/api/bookings/user/itinerary/${itineraryId}`);
+        const response = await fetch(
+          `${process.env.API_URL}/api/bookings/user/itinerary/${itineraryId}`
+        );
         if (!response.ok) {
           alert("Failed to fetch itinerary details");
-          router.push("/")
+          router.push("/");
         }
         const data = await response.json();
         setItinerary(data);
@@ -108,7 +106,7 @@ const CheckoutPage = () => {
   const fetchFlightInfo = async (lastName, bookingReference, itineraryId) => {
     try {
       const response = await fetch(
-        `/api/bookings/user/flights-info?lastName=${lastName}&bookingReference=${bookingReference}&itineraryId=${itineraryId}`
+        `${process.env.API_URL}/api/bookings/user/flights-info?lastName=${lastName}&bookingReference=${bookingReference}&itineraryId=${itineraryId}`
       );
       if (!response.ok) {
         throw new Error(
@@ -124,15 +122,13 @@ const CheckoutPage = () => {
     }
   };
 
-
-
   const handleConfirmBooking = async () => {
     // Validate fields before proceeding
     const creditCardRegex = /^[0-9]{16}$/; // 16-digit credit card number
     const cvvRegex = /^[0-9]{3,4}$/; // 3 or 4-digit CVV
-  
+
     let isValid = true;
-  
+
     // Validate credit card number
     if (!creditCardRegex.test(creditCardNumber)) {
       setCreditCardError("Please enter a valid 16-digit credit card number.");
@@ -140,7 +136,7 @@ const CheckoutPage = () => {
     } else {
       setCreditCardError("");
     }
-  
+
     // Validate expiry date
     if (!validateExpiryDate(expiryDate)) {
       setExpiryDateError("Please enter a valid expiry date in MM/YYYY format.");
@@ -148,7 +144,7 @@ const CheckoutPage = () => {
     } else {
       setExpiryDateError("");
     }
-  
+
     // Validate CVV
     if (!cvvRegex.test(cvv)) {
       setCvvError("Please enter a valid 3 or 4-digit CVV.");
@@ -156,7 +152,7 @@ const CheckoutPage = () => {
     } else {
       setCvvError("");
     }
-  
+
     // Validate billing address
     if (!billingAddress.trim()) {
       setBillingAddressError("Please enter a valid billing address.");
@@ -164,173 +160,234 @@ const CheckoutPage = () => {
     } else {
       setBillingAddressError("");
     }
-  
+
     // If any field is invalid, stop execution
     if (!isValid) {
       alert("Please fix the errors before confirming the booking.");
       return;
     }
-  
+
     try {
       // Call the endpoint to update the credit card info
       const response = await fetch(
-        `/api/bookings/user/credit?itineraryId=${itineraryId}&creditCardNumber=${creditCardNumber}`,
+        `${process.env.API_URL}/api/bookings/user/credit?itineraryId=${itineraryId}&creditCardNumber=${creditCardNumber}`,
         {
           method: "PUT",
         }
       );
-  
+
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to update credit card information.");
+        throw new Error(
+          errorData.error || "Failed to update credit card information."
+        );
       }
-  
+
       // If all validations pass
       alert("Booking confirmed successfully!");
-  
+
       // Generate PDF Invoice
       const doc = new jsPDF();
-     
+
       // Add title
       doc.setFontSize(18);
       doc.text("Trip Booking Invoice", 105, 20, { align: "center" });
-    
+
       doc.setFontSize(12);
-   // Add payment details
-let yPosition = 80; // Start position for payment details
-doc.text("Payment Details:", 20, yPosition);
-yPosition += 10; // Add spacing
-doc.text(`Credit Card Number: ${creditCardNumber.replace(/\d{12}/, "************")}`, 30, yPosition);
-yPosition += 10; // Add spacing
-doc.text(`Expiry Date: ${expiryDate}`, 30, yPosition);
-yPosition += 10; // Add spacing
-doc.text(`CVV: ***`, 30, yPosition); // Mask the CVV for security
-yPosition += 10; // Add spacing
-doc.text(`Billing Address: ${billingAddress}`, 30, yPosition);
-yPosition += 20; // Add extra spacing before the next section
+      // Add payment details
+      let yPosition = 80; // Start position for payment details
+      doc.text("Payment Details:", 20, yPosition);
+      yPosition += 10; // Add spacing
+      doc.text(
+        `Credit Card Number: ${creditCardNumber.replace(
+          /\d{12}/,
+          "************"
+        )}`,
+        30,
+        yPosition
+      );
+      yPosition += 10; // Add spacing
+      doc.text(`Expiry Date: ${expiryDate}`, 30, yPosition);
+      yPosition += 10; // Add spacing
+      doc.text(`CVV: ***`, 30, yPosition); // Mask the CVV for security
+      yPosition += 10; // Add spacing
+      doc.text(`Billing Address: ${billingAddress}`, 30, yPosition);
+      yPosition += 20; // Add extra spacing before the next section
 
-// Add flight details if they exist
-if (itinerary.flights && itinerary.flights.length > 0) {
-  doc.text("Flight Details:", 20, yPosition);
-  yPosition += 10; // Add spacing
-  for (const flight of itinerary.flights) {
-    const flightData = await fetchFlightInfo(
-      flight.lastName,
-      flight.bookingReference,
-      itineraryId
-    );
-    console.log(flightData.agencyId)
-    console.log(flightData.bookingReference)
-    if (flightData) {
-      yPosition += 10; // Add spacing
-      doc.text(`First Name: ${flightData.firstName}`, 30, yPosition);
-      yPosition += 10; // Add spacing
-      doc.text(`Last Name: ${flightData.lastName}`, 30, yPosition);
-      yPosition += 10; // Add spacing
-      doc.text(`Booking Reference: ${flightData.bookingReference}`, 30, yPosition);
-      yPosition += 10; // Add spacing
-      doc.text(`Flight Number: ${flightData.agencyId}`, 30, yPosition);
-      yPosition += 10; // Add spacing
-      doc.text(`Passport Number: ${flightData.passportNumber}`, 30, yPosition);
-      yPosition += 10; // Add spacing
-      doc.text(`Ticket Number: ${flightData.ticketNumber}`, 30, yPosition);
-      yPosition += 10;
-      doc.text(`Status: ${flightData.status}`, 30, yPosition);
-      yPosition += 10;
-    
+      // Add flight details if they exist
+      if (itinerary.flights && itinerary.flights.length > 0) {
+        doc.text("Flight Details:", 20, yPosition);
+        yPosition += 10; // Add spacing
+        for (const flight of itinerary.flights) {
+          const flightData = await fetchFlightInfo(
+            flight.lastName,
+            flight.bookingReference,
+            itineraryId
+          );
+          console.log(flightData.agencyId);
+          console.log(flightData.bookingReference);
+          if (flightData) {
+            yPosition += 10; // Add spacing
+            doc.text(`First Name: ${flightData.firstName}`, 30, yPosition);
+            yPosition += 10; // Add spacing
+            doc.text(`Last Name: ${flightData.lastName}`, 30, yPosition);
+            yPosition += 10; // Add spacing
+            doc.text(
+              `Booking Reference: ${flightData.bookingReference}`,
+              30,
+              yPosition
+            );
+            yPosition += 10; // Add spacing
+            doc.text(`Flight Number: ${flightData.agencyId}`, 30, yPosition);
+            yPosition += 10; // Add spacing
+            doc.text(
+              `Passport Number: ${flightData.passportNumber}`,
+              30,
+              yPosition
+            );
+            yPosition += 10; // Add spacing
+            doc.text(
+              `Ticket Number: ${flightData.ticketNumber}`,
+              30,
+              yPosition
+            );
+            yPosition += 10;
+            doc.text(`Status: ${flightData.status}`, 30, yPosition);
+            yPosition += 10;
 
-      for(const flightInfo of flightData.flights){
-        doc.text(`Arrival: ${new Date(flightInfo.arrivalTime).toLocaleString()}`, 30, yPosition);
-        yPosition += 10; // Add spacing
-        doc.text(`Duration: ${flightInfo.duration} minutes`, 30, yPosition);
-        yPosition += 10; // Add spacing
-        doc.text(`Origin: ${flightInfo.origin.name} (${flightInfo.origin.code})`, 30, yPosition);
-        yPosition += 10; // Add spacing
-        doc.text(`Destination: ${flightInfo.destination.name} (${flightInfo.destination.code})`, 30, yPosition);
-        yPosition += 10; // Add spacing
-        doc.text(`Status: ${flightInfo.status}`, 30, yPosition);
-        yPosition += 20; // Add extra spacing before the next flight
-
+            for (const flightInfo of flightData.flights) {
+              doc.text(
+                `Arrival: ${new Date(flightInfo.arrivalTime).toLocaleString()}`,
+                30,
+                yPosition
+              );
+              yPosition += 10; // Add spacing
+              doc.text(
+                `Duration: ${flightInfo.duration} minutes`,
+                30,
+                yPosition
+              );
+              yPosition += 10; // Add spacing
+              doc.text(
+                `Origin: ${flightInfo.origin.name} (${flightInfo.origin.code})`,
+                30,
+                yPosition
+              );
+              yPosition += 10; // Add spacing
+              doc.text(
+                `Destination: ${flightInfo.destination.name} (${flightInfo.destination.code})`,
+                30,
+                yPosition
+              );
+              yPosition += 10; // Add spacing
+              doc.text(`Status: ${flightInfo.status}`, 30, yPosition);
+              yPosition += 20; // Add extra spacing before the next flight
+            }
+          }
+        }
       }
-     
-    }
-  }
-}
 
-// Add hotel details if they exist
-if (itinerary.hotelBookings && itinerary.hotelBookings.length > 0) {
-  doc.text("Hotel Details:", 20, yPosition);
-  yPosition += 10; // Add spacing
-  itinerary.hotelBookings.forEach((hotel, index) => {
-    doc.text(`Hotel ${index + 1}:`, 20, yPosition);
-    yPosition += 10; // Add spacing
-    doc.text(`  Hotel ID: ${hotel.hotelId}`, 30, yPosition);
-    yPosition += 10; // Add spacing
-    doc.text(`  Room Type: ${hotel.roomType}`, 30, yPosition);
-    yPosition += 10; // Add spacing
-    doc.text(`  Check-In: ${new Date(hotel.checkInDate).toLocaleDateString()}`, 30, yPosition);
-    yPosition += 10; // Add spacing
-    doc.text(`  Check-Out: ${new Date(hotel.checkOutDate).toLocaleDateString()}`, 30, yPosition);
-    yPosition += 20; // Add extra spacing before the next hotel
-  });
-}
+      // Add hotel details if they exist
+      if (itinerary.hotelBookings && itinerary.hotelBookings.length > 0) {
+        doc.text("Hotel Details:", 20, yPosition);
+        yPosition += 10; // Add spacing
+        itinerary.hotelBookings.forEach((hotel, index) => {
+          doc.text(`Hotel ${index + 1}:`, 20, yPosition);
+          yPosition += 10; // Add spacing
+          doc.text(`  Hotel ID: ${hotel.hotelId}`, 30, yPosition);
+          yPosition += 10; // Add spacing
+          doc.text(`  Room Type: ${hotel.roomType}`, 30, yPosition);
+          yPosition += 10; // Add spacing
+          doc.text(
+            `  Check-In: ${new Date(hotel.checkInDate).toLocaleDateString()}`,
+            30,
+            yPosition
+          );
+          yPosition += 10; // Add spacing
+          doc.text(
+            `  Check-Out: ${new Date(hotel.checkOutDate).toLocaleDateString()}`,
+            30,
+            yPosition
+          );
+          yPosition += 20; // Add extra spacing before the next hotel
+        });
+      }
 
-// Add price breakdown
-doc.text("Price Breakdown:", 20, yPosition);
-yPosition += 10; // Add spacing
-doc.text(`Flight Price: $${itinerary.priceBreakdown.flightPrice}`, 30, yPosition);
-yPosition += 10; // Add spacing
-doc.text(`Hotel Price: $${itinerary.priceBreakdown.hotelPrice}`, 30, yPosition);
-yPosition += 10; // Add spacing
-doc.text(`Taxes and Fees: $${itinerary.priceBreakdown.taxesAndFees}`, 30, yPosition);
-yPosition += 10; // Add spacing
-doc.text(`Total: $${itinerary.priceBreakdown.total}`, 30, yPosition);
-  
+      // Add price breakdown
+      doc.text("Price Breakdown:", 20, yPosition);
+      yPosition += 10; // Add spacing
+      doc.text(
+        `Flight Price: $${itinerary.priceBreakdown.flightPrice}`,
+        30,
+        yPosition
+      );
+      yPosition += 10; // Add spacing
+      doc.text(
+        `Hotel Price: $${itinerary.priceBreakdown.hotelPrice}`,
+        30,
+        yPosition
+      );
+      yPosition += 10; // Add spacing
+      doc.text(
+        `Taxes and Fees: $${itinerary.priceBreakdown.taxesAndFees}`,
+        30,
+        yPosition
+      );
+      yPosition += 10; // Add spacing
+      doc.text(`Total: $${itinerary.priceBreakdown.total}`, 30, yPosition);
+
       // Save the PDF
       doc.save("Trip_Booking_Invoice.pdf");
-    // Simulate booking confirmation
+      // Simulate booking confirmation
 
       sessionStorage.removeItem("cart");
       sessionStorage.removeItem("hotelCart");
-      router.push("/user/Home")
+      router.push("/user/Home");
     } catch (error) {
       console.error("Error confirming booking:", error);
-      alert("An error occurred while confirming the booking. Please try again.");
+      alert(
+        "An error occurred while confirming the booking. Please try again."
+      );
     }
   };
   if (!itinerary) {
     return <div>Loading...</div>;
   }
- 
+
   const handleCancelBooking = async () => {
     try {
       // Retrieve the itinerary ID from session storage
       const itineraryId = sessionStorage.getItem("itineraryId");
-  
+
       if (!itineraryId) {
         alert("No itinerary found to cancel.");
         return;
       }
-  
+
       // Send a DELETE request to cancel the itinerary
-      const response = await fetch(`/api/bookings/user/itinerary/${itineraryId}`, {
-        method: "DELETE",
-      });
-  
+      const response = await fetch(
+        `${process.env.API_URL}/api/bookings/user/itinerary/${itineraryId}`,
+        {
+          method: "DELETE",
+        }
+      );
+
       if (!response.ok) {
         throw new Error("Failed to cancel the itinerary.");
       }
 
-       // Remove cart and hotelCart from sessionStorage
-    sessionStorage.removeItem("cart");
-    sessionStorage.removeItem("hotelCart");
-  
+      // Remove cart and hotelCart from sessionStorage
+      sessionStorage.removeItem("cart");
+      sessionStorage.removeItem("hotelCart");
+
       alert("Itinerary canceled successfully.");
       // Redirect to the home page
       router.push("/user/Home");
     } catch (error) {
       console.error("Error canceling itinerary:", error);
-      alert("An error occurred while canceling the itinerary. Please try again.");
+      alert(
+        "An error occurred while canceling the itinerary. Please try again."
+      );
     }
   };
 
@@ -338,20 +395,31 @@ doc.text(`Total: $${itinerary.priceBreakdown.total}`, 30, yPosition);
     <>
       <Header />
       <div className="checkout-page p-8 max-w-5xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6 text-center text-purple-700">Checkout</h1>
+        <h1 className="text-3xl font-bold mb-6 text-center text-purple-700">
+          Checkout
+        </h1>
 
         {/* Itinerary Details */}
         <div className="itinerary-details mb-8">
-          <h2 className="text-2xl font-semibold mb-4 text-purple-600">Itinerary Details</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-purple-600">
+            Itinerary Details
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Flights Section */}
             {itinerary.flights.length > 0 && (
               <div className="bg-white shadow-md rounded-lg p-6 border border-purple-300">
-                <h3 className="text-lg font-bold mb-4 text-purple-700">Flights</h3>
+                <h3 className="text-lg font-bold mb-4 text-purple-700">
+                  Flights
+                </h3>
                 {itinerary.flights.map((flight, index) => (
                   <div key={index} className="mb-4">
-                    <p><strong>Last Name:</strong> {flight.lastName}</p>
-                    <p><strong>Booking Reference:</strong> {flight.bookingReference}</p>
+                    <p>
+                      <strong>Last Name:</strong> {flight.lastName}
+                    </p>
+                    <p>
+                      <strong>Booking Reference:</strong>{" "}
+                      {flight.bookingReference}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -360,19 +428,34 @@ doc.text(`Total: $${itinerary.priceBreakdown.total}`, 30, yPosition);
             {/* Hotel Bookings Section */}
             {itinerary.hotelBookings.length > 0 && (
               <div className="bg-white shadow-md rounded-lg p-6 border border-purple-300">
-                <h3 className="text-lg font-bold mb-4 text-purple-700">Hotel Bookings</h3>
+                <h3 className="text-lg font-bold mb-4 text-purple-700">
+                  Hotel Bookings
+                </h3>
                 {itinerary.hotelBookings.map((hotel, index) => {
                   const nights = Math.ceil(
-                    (new Date(hotel.checkOutDate) - new Date(hotel.checkInDate)) /
+                    (new Date(hotel.checkOutDate) -
+                      new Date(hotel.checkInDate)) /
                       (1000 * 60 * 60 * 24)
                   );
                   return (
                     <div key={index} className="mb-4">
-                      <p><strong>Hotel ID:</strong> {hotel.hotelId}</p>
-                      <p><strong>Room Type:</strong> {hotel.roomType}</p>
-                      <p><strong>Check-In Date:</strong> {new Date(hotel.checkInDate).toLocaleDateString()}</p>
-                      <p><strong>Check-Out Date:</strong> {new Date(hotel.checkOutDate).toLocaleDateString()}</p>
-                      <p><strong>Total Nights:</strong> {nights}</p>
+                      <p>
+                        <strong>Hotel ID:</strong> {hotel.hotelId}
+                      </p>
+                      <p>
+                        <strong>Room Type:</strong> {hotel.roomType}
+                      </p>
+                      <p>
+                        <strong>Check-In Date:</strong>{" "}
+                        {new Date(hotel.checkInDate).toLocaleDateString()}
+                      </p>
+                      <p>
+                        <strong>Check-Out Date:</strong>{" "}
+                        {new Date(hotel.checkOutDate).toLocaleDateString()}
+                      </p>
+                      <p>
+                        <strong>Total Nights:</strong> {nights}
+                      </p>
                     </div>
                   );
                 })}
@@ -382,97 +465,137 @@ doc.text(`Total: $${itinerary.priceBreakdown.total}`, 30, yPosition);
         </div>
         {/* Payment Details */}
         <div className="payment-details mb-8">
-          <h2 className="text-2xl font-semibold mb-4 text-purple-600">Payment Details</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-purple-600">
+            Payment Details
+          </h2>
           <div className="bg-white shadow-md rounded-lg p-6 border border-purple-300">
             <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-  <label className="block text-sm font-medium mb-2 text-purple-700">Credit Card Number</label>
-  <input
-    type="text"
-    value={creditCardNumber}
-    onChange={(e) => setCreditCardNumber(e.target.value)}
-    className={`w-full p-2 border rounded focus:outline-none focus:ring-2 ${
-      creditCardError ? "border-red-500 focus:ring-red-500" : "border-purple-300 focus:ring-purple-500"
-    }`}
-    placeholder="123456789234"
-  />
-  {creditCardError && <p className="text-red-500 text-sm mt-1">{creditCardError}</p>}
-</div>
               <div>
-                <label className="block text-sm font-medium mb-2 text-purple-700">Expiry Date</label>
+                <label className="block text-sm font-medium mb-2 text-purple-700">
+                  Credit Card Number
+                </label>
+                <input
+                  type="text"
+                  value={creditCardNumber}
+                  onChange={(e) => setCreditCardNumber(e.target.value)}
+                  className={`w-full p-2 border rounded focus:outline-none focus:ring-2 ${
+                    creditCardError
+                      ? "border-red-500 focus:ring-red-500"
+                      : "border-purple-300 focus:ring-purple-500"
+                  }`}
+                  placeholder="123456789234"
+                />
+                {creditCardError && (
+                  <p className="text-red-500 text-sm mt-1">{creditCardError}</p>
+                )}
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2 text-purple-700">
+                  Expiry Date
+                </label>
                 <input
                   type="text"
                   value={expiryDate}
                   onChange={(e) => setExpiryDate(e.target.value)}
                   className={`w-full p-2 border rounded focus:outline-none focus:ring-2 ${
-                    expiryDateError ? "border-red-500 focus:ring-red-500" : "border-purple-300 focus:ring-purple-500"
+                    expiryDateError
+                      ? "border-red-500 focus:ring-red-500"
+                      : "border-purple-300 focus:ring-purple-500"
                   }`}
                   placeholder="MM/YYYY"
                 />
-                {expiryDateError && <p className="text-red-500 text-sm mt-1">{expiryDateError}</p>}
+                {expiryDateError && (
+                  <p className="text-red-500 text-sm mt-1">{expiryDateError}</p>
+                )}
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2 text-purple-700">CVV</label>
+                <label className="block text-sm font-medium mb-2 text-purple-700">
+                  CVV
+                </label>
                 <input
                   type="text"
                   value={cvv}
                   onChange={(e) => setCvv(e.target.value)}
                   className={`w-full p-2 border rounded focus:outline-none focus:ring-2 ${
-                    cvvError ? "border-red-500 focus:ring-red-500" : "border-purple-300 focus:ring-purple-500"
+                    cvvError
+                      ? "border-red-500 focus:ring-red-500"
+                      : "border-purple-300 focus:ring-purple-500"
                   }`}
                   placeholder="123"
                 />
-                {cvvError && <p className="text-red-500 text-sm mt-1">{cvvError}</p>}
+                {cvvError && (
+                  <p className="text-red-500 text-sm mt-1">{cvvError}</p>
+                )}
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2 text-purple-700">Billing Address</label>
+                <label className="block text-sm font-medium mb-2 text-purple-700">
+                  Billing Address
+                </label>
                 <textarea
                   value={billingAddress}
                   onChange={(e) => setBillingAddress(e.target.value)}
                   className={`w-full p-2 border rounded focus:outline-none focus:ring-2 ${
-                    billingAddressError ? "border-red-500 focus:ring-red-500" : "border-purple-300 focus:ring-purple-500"
+                    billingAddressError
+                      ? "border-red-500 focus:ring-red-500"
+                      : "border-purple-300 focus:ring-purple-500"
                   }`}
                   placeholder="123 Main St, City, Country"
                 />
-                {billingAddressError && <p className="text-red-500 text-sm mt-1">{billingAddressError}</p>}
+                {billingAddressError && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {billingAddressError}
+                  </p>
+                )}
               </div>
             </form>
           </div>
         </div>
 
-            {/* Price Breakdown */}
-    <div className="price-breakdown bg-white shadow-md rounded-lg p-6 border border-purple-300">
-      <h2 className="text-2xl font-semibold mb-4 text-purple-600">Price Breakdown</h2>
-      <div className="flex justify-between items-center">
-        <p className="text-lg font-medium text-gray-700">Flight Price:</p>
-        <p className="text-lg font-semibold text-gray-900">${itinerary.priceBreakdown.flightPrice}</p>
-      </div>
-      <div className="flex justify-between items-center mt-2">
-        <p className="text-lg font-medium text-gray-700">Hotel Price:</p>
-        <p className="text-lg font-semibold text-gray-900">${itinerary.priceBreakdown.hotelPrice}</p>
-      </div>
-      <div className="flex justify-between items-center mt-2">
-        <p className="text-lg font-medium text-gray-700">Subtotal:</p>
-        <p className="text-lg font-semibold text-gray-900">${itinerary.priceBreakdown.subtotal}</p>
-      </div>
-      <div className="flex justify-between items-center mt-2">
-        <p className="text-lg font-medium text-gray-700">Taxes and Fees:</p>
-        <p className="text-lg font-semibold text-gray-900">${itinerary.priceBreakdown.taxesAndFees}</p>
-      </div>
-      <div className="flex justify-between items-center mt-2">
-        <p className="text-lg font-medium text-gray-700">Total:</p>
-        <p className="text-lg font-semibold text-gray-900">${itinerary.priceBreakdown.total}</p>
-      </div>
-    </div>
-     {/* Confirm Booking Button */}
+        {/* Price Breakdown */}
+        <div className="price-breakdown bg-white shadow-md rounded-lg p-6 border border-purple-300">
+          <h2 className="text-2xl font-semibold mb-4 text-purple-600">
+            Price Breakdown
+          </h2>
+          <div className="flex justify-between items-center">
+            <p className="text-lg font-medium text-gray-700">Flight Price:</p>
+            <p className="text-lg font-semibold text-gray-900">
+              ${itinerary.priceBreakdown.flightPrice}
+            </p>
+          </div>
+          <div className="flex justify-between items-center mt-2">
+            <p className="text-lg font-medium text-gray-700">Hotel Price:</p>
+            <p className="text-lg font-semibold text-gray-900">
+              ${itinerary.priceBreakdown.hotelPrice}
+            </p>
+          </div>
+          <div className="flex justify-between items-center mt-2">
+            <p className="text-lg font-medium text-gray-700">Subtotal:</p>
+            <p className="text-lg font-semibold text-gray-900">
+              ${itinerary.priceBreakdown.subtotal}
+            </p>
+          </div>
+          <div className="flex justify-between items-center mt-2">
+            <p className="text-lg font-medium text-gray-700">Taxes and Fees:</p>
+            <p className="text-lg font-semibold text-gray-900">
+              ${itinerary.priceBreakdown.taxesAndFees}
+            </p>
+          </div>
+          <div className="flex justify-between items-center mt-2">
+            <p className="text-lg font-medium text-gray-700">Total:</p>
+            <p className="text-lg font-semibold text-gray-900">
+              ${itinerary.priceBreakdown.total}
+            </p>
+          </div>
+        </div>
+        {/* Confirm Booking Button */}
         <div className="text-center">
-            {/* Cancel Flight Button */}
-  <button
-    onClick={handleCancelBooking}
-    className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
-  >
-    Cancel Booking
-  </button>
+          {/* Cancel Flight Button */}
+          <button
+            onClick={handleCancelBooking}
+            className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+          >
+            Cancel Booking
+          </button>
           <button
             onClick={handleConfirmBooking}
             className="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition"

@@ -23,13 +23,16 @@ function LikeList({
   useEffect(() => {
     const fetchLikeList = async () => {
       try {
-        const response = await fetch("/api/hotel/user/get-hotel", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        });
+        const response = await fetch(
+          `${process.env.API_URL}/api/hotel/user/get-hotel`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          }
+        );
 
         if (response.ok) {
           const data = await response.json();
@@ -46,14 +49,17 @@ function LikeList({
 
   const handleRemoveHotel = async (hotelId: number) => {
     try {
-      const response = await fetch("/api/hotel/user/delete-hotel", {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({ hotelId }),
-      });
+      const response = await fetch(
+        `${process.env.API_URL}/api/hotel/user/delete-hotel`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({ hotelId }),
+        }
+      );
 
       if (response.ok) {
         alert("Hotel removed from favorites!");

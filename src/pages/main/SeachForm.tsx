@@ -33,7 +33,7 @@ const SearchForm: React.FC<SearchFormProps> = ({
   startDate,
   setStartDate,
   endDate,
-  setEndDate
+  setEndDate,
 }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); // Prevent default form submission behavior
@@ -55,22 +55,31 @@ const SearchForm: React.FC<SearchFormProps> = ({
     const formattedEndDate = endDate ? endDate.toISOString().split("T")[0] : "";
 
     // Construct the endpoint dynamically
-    const endpoint = `/api/flights/details?origin=${encodeURIComponent(
+    const endpoint = `${
+      process.env.API_URL
+    }/api/flights/details?origin=${encodeURIComponent(
       origin
-    )}&destination=${encodeURIComponent(destination)}&date=${formattedStartDate}&flight_type=${encodeURIComponent(
+    )}&destination=${encodeURIComponent(
+      destination
+    )}&date=${formattedStartDate}&flight_type=${encodeURIComponent(
       tripType === "twoway" ? "round_trip" : tripType
-    )}${tripType === "twoway" && endDate ? `&round_trip_date=${formattedEndDate}` : ""}`;
+    )}${
+      tripType === "twoway" && endDate
+        ? `&round_trip_date=${formattedEndDate}`
+        : ""
+    }`;
 
     try {
       const response = await fetch(endpoint);
       if (!response.ok) {
-        throw new Error(`Error fetching flight details: ${response.statusText}`);
+        throw new Error(
+          `Error fetching flight details: ${response.statusText}`
+        );
       }
 
-       // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       alert(err.message || "An unknown error occurred.");
-     
     }
   };
 

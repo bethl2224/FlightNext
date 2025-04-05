@@ -31,7 +31,7 @@ function SignIn() {
 
     try {
       console.log("Signing in with:", formData);
-      const response = await fetch("/api/account/login", {
+      const response = await fetch(`${process.env.API_URL}/api/account/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

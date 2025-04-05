@@ -39,11 +39,14 @@ function CreateRoomType({ hotelId }: { hotelId: number }) {
     }
 
     try {
-      const response = await fetch("/api/hotel/owner/room-type", {
-        method: "POST",
-        credentials: "include",
-        body: formData,
-      });
+      const response = await fetch(
+        `${process.env.API_URL}/api/hotel/owner/room-type`,
+        {
+          method: "POST",
+          credentials: "include",
+          body: formData,
+        }
+      );
 
       if (response.status === 403) {
         setMessage("Permission Denied");

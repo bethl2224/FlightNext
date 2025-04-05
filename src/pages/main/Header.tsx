@@ -34,7 +34,7 @@ function Header() {
           return;
         }
 
-        const res = await fetch("/api/account/me", {
+        const res = await fetch(`${process.env.API_URL}/api/account/me`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

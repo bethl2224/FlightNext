@@ -47,7 +47,7 @@ function ListingsHeader({
   useEffect(() => {
     const fetchRoomTypesAsync = async () => {
       // further validate to ensure user / owner login in
-      const res = await fetch("/api/account/me", {
+      const res = await fetch(`${process.env.API_URL}/api/account/me`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -100,7 +100,9 @@ function ListingsHeader({
       try {
         const params = new URLSearchParams({ city: query });
         console.log(params);
-        const response = await fetch(`/api/flights/cities?${params}`);
+        const response = await fetch(
+          `${process.env.API_URL}/api/flights/cities?${params}`
+        );
         if (response.ok) {
           const data = await response.json();
           setCities(data); // Update cities state

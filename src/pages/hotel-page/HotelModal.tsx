@@ -29,7 +29,9 @@ const HotelModal: React.FC = () => {
       setIsLoading(true);
       try {
         const params = new URLSearchParams({ city: query });
-        const response = await fetch(`/api/flights/cities?${params}`);
+        const response = await fetch(
+          `${process.env.API_URL}/api/flights/cities?${params}`
+        );
         if (response.ok) {
           const data = await response.json();
           setCities(data);
@@ -92,11 +94,14 @@ const HotelModal: React.FC = () => {
         console.log(`${key}:`, value);
       });
 
-      const res = await fetch("api/hotel/user/create-hotel", {
-        method: "POST",
-        credentials: "include",
-        body: formDataToSend,
-      });
+      const res = await fetch(
+        `${process.env.API_URL}/api/hotel/user/create-hotel`,
+        {
+          method: "POST",
+          credentials: "include",
+          body: formDataToSend,
+        }
+      );
 
       if (res.ok) {
         const result = await res.json();

@@ -30,13 +30,16 @@ function SignUp() {
   // Handle form submission
   const handleSignUp = async () => {
     try {
-      const response = await fetch("/api/account/sign-up", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        `${process.env.API_URL}/api/account/sign-up`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
       if (response.ok) {
         const successData = await response.json();

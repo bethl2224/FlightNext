@@ -40,7 +40,9 @@ function Sidebar({
       if (query) {
         const params = new URLSearchParams({ name: query });
 
-        const response = await fetch(`/api/hotel/visitor/hotel-name?${params}`);
+        const response = await fetch(
+          `${process.env.API_URL}/api/hotel/visitor/hotel-name?${params}`
+        );
         if (response.ok) {
           const data = await response.json();
           console.log(data, "****************");

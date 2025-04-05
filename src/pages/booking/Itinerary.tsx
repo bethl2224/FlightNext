@@ -124,7 +124,7 @@ const Itinerary: React.FC = () => {
   useEffect(() => {
     const fetchRole = async () => {
       try {
-        const res = await fetch("/api/account/me", {
+        const res = await fetch(`${process.env.API_URL}/api/account/me`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -154,7 +154,7 @@ const Itinerary: React.FC = () => {
   useEffect(() => {
     const checkAuthentication = async () => {
       try {
-        const response = await fetch("/api/account/me", {
+        const response = await fetch(`${process.env.API_URL}/api/account/me`, {
           method: "GET",
           credentials: "include", // Include cookies in the request
         });
@@ -349,7 +349,7 @@ const Itinerary: React.FC = () => {
       }
 
       // Fetch user identity
-      const userResponse = await fetch("/api/account/me");
+      const userResponse = await fetch(`${process.env.API_URL}/api/account/me`);
       if (!userResponse.ok) {
         router.push("/user/Home");
         return;
@@ -394,13 +394,16 @@ const Itinerary: React.FC = () => {
       // console.log("Constructed Itinerary:", itinerary);
 
       // Optionally, send the itinerary to the backend
-      const itineraryResponse = await fetch("/api/bookings/user/itinerary", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(itinerary),
-      });
+      const itineraryResponse = await fetch(
+        `${process.env.API_URL}/api/bookings/user/itinerary`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(itinerary),
+        }
+      );
 
       if (!itineraryResponse.ok) {
         const error = await itineraryResponse.json();

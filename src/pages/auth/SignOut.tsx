@@ -12,10 +12,13 @@ function SignOut({ onLogout }: SignOutModalProps) {
   // Handle sign-out
   const handleSignOut = async () => {
     try {
-      const response = await fetch("/api/account/logout", {
-        method: "POST",
-        credentials: "include", // Include cookies in the request
-      });
+      const response = await fetch(
+        `${process.env.API_URL}/api/account/logout`,
+        {
+          method: "POST",
+          credentials: "include", // Include cookies in the request
+        }
+      );
 
       if (response.ok) {
         sessionStorage.clear();

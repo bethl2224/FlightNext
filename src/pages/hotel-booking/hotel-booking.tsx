@@ -48,14 +48,17 @@ function BookingRecord({
     console.log("*****************************");
 
     try {
-      const response = await fetch("/api/hotel/user/room-booking", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(bookingData),
-      });
+      const response = await fetch(
+        `${process.env.API_URL}/api/hotel/user/room-booking`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(bookingData),
+        }
+      );
 
       if (!response.ok) {
         alert("Invalid Date Range or Credit Card Info");

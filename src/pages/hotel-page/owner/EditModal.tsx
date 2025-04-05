@@ -30,14 +30,17 @@ function EditModal({
     };
 
     try {
-      const response = await fetch("/api/hotel/owner/room-type", {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(updateData),
-      });
+      const response = await fetch(
+        `${process.env.API_URL}/api/hotel/owner/room-type`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(updateData),
+        }
+      );
 
       const result = await response.json();
       console.log("Capacity updated successfully:", result);

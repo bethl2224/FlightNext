@@ -8,7 +8,6 @@ import TestimonialsSection from "@pages/main/TestimonialsSection";
 import Footer from "@pages/main/Footer";
 import Header from "@pages/main/Header";
 import Hero from "@pages/main/Hero";
-import { apiURl } from "@/utils/hotel-query";
 import { useState, useEffect } from "react";
 
 function FlightNext() {
@@ -20,7 +19,7 @@ function FlightNext() {
   useEffect(() => {
     const fetchRole = async () => {
       try {
-        const res = await fetch("/api/account/me", {
+        const res = await fetch(`${process.env.API_URL}/api/account/me`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -50,7 +49,7 @@ function FlightNext() {
   useEffect(() => {
     const checkAuthentication = async () => {
       try {
-        const response = await fetch("/api/account/me", {
+        const response = await fetch(`${process.env.API_URL}/api/account/me`, {
           method: "GET",
           credentials: "include", // Include cookies in the request
         });

@@ -35,7 +35,9 @@ const Dropdown: React.FC<DropdownProps> = ({
       checkInDate: checkInDate,
       checkOutDate: checkOutDate,
     });
-    const res = await fetch(`/api/hotel/owner/filter-roomtype?${params}`);
+    const res = await fetch(
+      `${process.env.API_URL}/api/hotel/owner/filter-roomtype?${params}`
+    );
 
     if (res.ok) {
       const data = await res.json();

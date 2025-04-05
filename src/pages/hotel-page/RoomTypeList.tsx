@@ -13,14 +13,17 @@ interface RoomTypeListProps {
 
 const handleLike = async (hotelId: number) => {
   try {
-    const response = await fetch("/api/hotel/user/add-hotel", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({ id: hotelId }), // Replace with actual room ID or data
-    });
+    const response = await fetch(
+      `${process.env.API_URL}/api/hotel/user/add-hotel`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ id: hotelId }), // Replace with actual room ID or data
+      }
+    );
     console.log("**************");
     console.log(hotelId);
     console.log(response);

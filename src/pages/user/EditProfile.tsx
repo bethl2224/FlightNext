@@ -30,7 +30,7 @@ function EditProfile() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch("/api/account/me", {
+        const response = await fetch(`${process.env.API_URL}/api/account/me`, {
           method: "GET",
           credentials: "include", // Include cookies in the request
         });
@@ -117,11 +117,14 @@ function EditProfile() {
             imageIsChanged={imageIsChanged} // Pass image change status to ProfileForm
             saveProfile={async (formData: FormData) => {
               try {
-                const response = await fetch("/api/account/edit-profile", {
-                  method: "PATCH",
-                  body: formData,
-                  credentials: "include",
-                });
+                const response = await fetch(
+                  `${process.env.API_URL}/api/account/edit-profile`,
+                  {
+                    method: "PATCH",
+                    body: formData,
+                    credentials: "include",
+                  }
+                );
                 return response.ok;
               } catch (error) {
                 console.error("Error saving profile:", error);

@@ -14,7 +14,9 @@ const VerifyFlight = () => {
 
     try {
       const response = await fetch(
-        `/api/bookings/user/flight-retrieve?lastName=${encodeURIComponent(
+        `${
+          process.env.API_URL
+        }/api/bookings/user/flight-retrieve?lastName=${encodeURIComponent(
           lastName
         )}&bookingReference=${encodeURIComponent(bookingReference)}`
       );
