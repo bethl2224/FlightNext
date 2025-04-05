@@ -1,10 +1,8 @@
 import { convertDate } from "./helper";
 
-export const apiURl = "http://app:3000/api";
-
 export async function fetchHotel() {
   try {
-    const res = await fetch(`${apiURl}/hotel/owner/get-hotel`, {
+    const res = await fetch("/api/hotel/owner/get-hotel", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -24,7 +22,7 @@ export async function fetchHotel() {
 export const fetchAllRoomType = async () => {
   try {
     const response = await fetch(
-      `${apiURl}/hotel/owner/filter-roomtype?roomType=All`
+      "/api/hotel/owner/filter-roomtype?roomType=All"
     );
     const data = await response.json();
     return data;
@@ -35,7 +33,7 @@ export const fetchAllRoomType = async () => {
 
 export const fetchRoomTypes = async () => {
   try {
-    const response = await fetch(`${apiURl}/hotel/owner/get-room-type`);
+    const response = await fetch("/api/hotel/owner/get-room-type");
     const data = await response.json();
     return data;
   } catch (error) {
@@ -59,7 +57,7 @@ export const searchHotelInfo = async (searchData, role = "user") => {
   try {
     const queryParams = new URLSearchParams(searchData).toString();
     console.log(queryParams);
-    const response = await fetch(`${apiURl}/hotel/visitor?${queryParams}`, {
+    const response = await fetch(`/api/hotel/visitor?${queryParams}`, {
       method: "GET",
     });
 
@@ -141,7 +139,7 @@ export async function searchAllMessage(accountid, queueType, role) {
       messageType: queueType,
       role: role, // TODO pass in role
     }).toString();
-    const response = await fetch(`${apiURl}/notification?${params}`, {
+    const response = await fetch(`/api/notification?${params}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -177,7 +175,7 @@ export async function searchAllMessage(accountid, queueType, role) {
 
 export async function deleteMessage(messageId) {
   try {
-    const response = await fetch(`${apiURl}/notification`, {
+    const response = await fetch("/api/notification", {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",

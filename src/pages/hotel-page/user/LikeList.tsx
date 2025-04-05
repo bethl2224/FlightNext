@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import { apiURl } from "@/utils/hotel-query";
 export interface LikeListItem {
   id: number;
   name: string;
@@ -24,7 +23,7 @@ function LikeList({
   useEffect(() => {
     const fetchLikeList = async () => {
       try {
-        const response = await fetch(`${apiURl}/hotel/user/get-hotel`, {
+        const response = await fetch("/api/hotel/user/get-hotel", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -47,7 +46,7 @@ function LikeList({
 
   const handleRemoveHotel = async (hotelId: number) => {
     try {
-      const response = await fetch(`${apiURl}/hotel/user/delete-hotel`, {
+      const response = await fetch("/api/hotel/user/delete-hotel", {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

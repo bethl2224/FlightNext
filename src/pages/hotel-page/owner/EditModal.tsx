@@ -2,7 +2,6 @@
 import * as React from "react";
 import { useState } from "react";
 import "@pages/styles/globals.css";
-import { apiURl } from "@/utils/hotel-query";
 function EditModal({
   roomType,
   hotelId,
@@ -31,7 +30,7 @@ function EditModal({
     };
 
     try {
-      const response = await fetch(`${apiURl}/hotel/owner/room-type`, {
+      const response = await fetch("/api/hotel/owner/room-type", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

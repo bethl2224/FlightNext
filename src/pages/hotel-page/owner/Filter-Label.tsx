@@ -1,4 +1,4 @@
-import { apiURl, fetchAllRoomType } from "@/utils/hotel-query";
+import { fetchAllRoomType } from "@/utils/hotel-query";
 import { Hotel } from "@pages/hotel-page/visitor/HotelListings";
 interface DropdownProps {
   options: string[];
@@ -35,7 +35,7 @@ const Dropdown: React.FC<DropdownProps> = ({
       checkInDate: checkInDate,
       checkOutDate: checkOutDate,
     });
-    const res = await fetch(`${apiURl}/hotel/owner/filter-roomtype?${params}`);
+    const res = await fetch(`/api/hotel/owner/filter-roomtype?${params}`);
 
     if (res.ok) {
       const data = await res.json();

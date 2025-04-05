@@ -3,7 +3,7 @@ import { apiURl } from "./hotel-query";
 async function deleteBookingOwner(bookingid) {
   try {
     const res = await fetch(
-      `${apiURl}/hotel/owner/room-booking?bookingId=${bookingid}`,
+      "/api/hotel/owner/room-booking?bookingId=${bookingid}",
       {
         method: "DELETE",
         headers: {
@@ -25,7 +25,7 @@ async function deleteBookingOwner(bookingid) {
 
 async function deleteBookingUser(bookingid) {
   try {
-    const res = await fetch(`${apiURl}/hotel/user/room-booking`, {
+    const res = await fetch("/api/hotel/user/room-booking", {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",

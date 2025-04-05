@@ -3,7 +3,6 @@ import Image from "next/image"; // Import Next.js Image component
 import SignInModal from "@pages/auth/SignIn";
 import SignUpModal from "@pages/auth/SignUp";
 import SignOutModal from "@pages/auth/SignOut";
-import { apiURl } from "@/utils/hotel-query";
 import { useEffect, useState } from "react";
 import LikeList from "@pages/hotel-page/user/LikeList";
 import NotificationModal from "@pages/main/Notification";
@@ -35,7 +34,7 @@ function Header() {
           return;
         }
 
-        const res = await fetch(`${apiURl}/account/me`, {
+        const res = await fetch("/api/account/me", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

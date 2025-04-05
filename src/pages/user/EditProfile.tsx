@@ -30,7 +30,7 @@ function EditProfile() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch(`${apiURl}/account/me`, {
+        const response = await fetch("/api/account/me", {
           method: "GET",
           credentials: "include", // Include cookies in the request
         });
@@ -38,7 +38,7 @@ function EditProfile() {
         // Check if the response contains an access token in cookies
         if (!response.ok) {
           console.error("Unauthorized access. Redirecting to homepage...");
-          router.push("http://localhost:3000");
+          router.push("/");
           return;
         }
 
@@ -62,7 +62,7 @@ function EditProfile() {
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
-        router.push("http://localhost:3000"); // Redirect on error
+        router.push("/"); // Redirect on error
       } finally {
         setLoading(false);
       }

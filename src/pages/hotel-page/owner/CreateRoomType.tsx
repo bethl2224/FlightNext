@@ -39,7 +39,7 @@ function CreateRoomType({ hotelId }: { hotelId: number }) {
     }
 
     try {
-      const response = await fetch(`${apiURl}/hotel/owner/room-type`, {
+      const response = await fetch("/api/hotel/owner/room-type", {
         method: "POST",
         credentials: "include",
         body: formData,
