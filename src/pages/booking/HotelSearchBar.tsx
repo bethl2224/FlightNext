@@ -28,6 +28,7 @@ interface Flight {
   duration: number;
   price: number;
   currency: string;
+  layover: string;
   availableSeats: number;
   status: string;
   airline: {
@@ -296,7 +297,7 @@ const HotelSearchBar: React.FC<HotelSearchBarProps> = ({addHotelToCart }) => {
   <input
     type="text"
     id="searchQuery"
-    placeholder="Search by city or hotel name"
+    placeholder="Search by hotel name"
     className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
     value={searchQuery}
     onChange={(e) => setSearchQuery(e.target.value)}
@@ -515,6 +516,7 @@ const HotelSearchBar: React.FC<HotelSearchBarProps> = ({addHotelToCart }) => {
                           <span className="font-semibold">Available Seats:</span>{" "}
                           {flight.availableSeats}
                         </p>
+                       
                       </div>
                     </li>
                   ))}

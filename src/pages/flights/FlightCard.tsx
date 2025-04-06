@@ -1,19 +1,7 @@
 import React from "react";
-
+import {Flight} from '../booking/FlightList'
 interface FlightProps {
-  flight: {
-    flightNumber: string | "";
-    departureTime: string;
-    arrivalTime: string;
-    origin: string;
-    trip_type: string;
-    destination: string;
-    origin_name: string;
-    dest_name: string;
-    duration: string;
-    layovers: string;
-    status: string;
-  };
+  flight: Flight
 
   isDarkMode?: boolean; // Prop to track dark mode
 }
@@ -51,10 +39,17 @@ const FlightCard: React.FC<FlightProps> = ({ flight, isDarkMode}) => {
       data-flight-id={flight?.flightNumber}
     >
       <div
-        className={`flex justify-between items-center mb-2 ${
+        className={`grid grid-cols-8 gap-2 items-center mb-2 ${
           isDarkMode ? "text-white" : "text-slate-800"
         }`}
       >
+
+            {/* Route */}
+            <div className="flex-1 text-center">
+          <span className={`font-bold ${isDarkMode ? "text-white" : ""}`}>
+            {flight.airline.name} ({flight.airline.code})
+          </span>
+        </div>
         {/* Route */}
         <div className="flex-1 text-center">
           <span className={`font-bold ${isDarkMode ? "text-white" : ""}`}>
@@ -72,15 +67,13 @@ const FlightCard: React.FC<FlightProps> = ({ flight, isDarkMode}) => {
         {/* Flight Number */}
         <div className="flex-1 text-center">
           <span className={`font-bold ${isDarkMode ? "text-white" : ""}`}>
-            Flight:
-          </span>{" "}
           {flight.flightNumber}
+          </span>
         </div>
 
         {/* Time */}
         <div className="flex-1 text-center">
           <span className={`font-bold ${isDarkMode ? "text-white" : ""}`}>
-            Time:
           </span>{" "}
           {formatFlightDateTime(flight.departureTime)} -{" "}
           {formatFlightDateTime(flight.arrivalTime)}
@@ -89,7 +82,6 @@ const FlightCard: React.FC<FlightProps> = ({ flight, isDarkMode}) => {
         {/* Duration */}
         <div className="flex-1 text-center">
           <span className={`font-bold ${isDarkMode ? "text-white" : ""}`}>
-            Duration:
           </span>{" "}
           {flight.duration}
         </div>
@@ -97,17 +89,21 @@ const FlightCard: React.FC<FlightProps> = ({ flight, isDarkMode}) => {
         {/* Layovers */}
         <div className="flex-1 text-center">
           <span className={`font-bold ${isDarkMode ? "text-white" : ""}`}>
-            Layovers:
           </span>{" "}
           {flight.layovers}
         </div>
-
-        {/* Status */}
-        <div className="flex-1 text-center">
+          {/* Status */}
+          <div className="flex-1 text-center">
           <span className={`font-bold ${isDarkMode ? "text-white" : ""}`}>
-            Status:
           </span>{" "}
           {flight.status}
+        </div>
+
+        {/* Price */}
+        <div className="flex-1 text-center">
+          <span className={`font-bold ${isDarkMode ? "text-white" : ""}`}>
+          </span>{" "}
+          {flight.price} {flight.currency}
         </div>
       </div>
     </article>

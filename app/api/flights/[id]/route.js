@@ -39,6 +39,10 @@ export async function GET(req, { params }) {
       origin: flightData.origin,
       destination: flightData.destination,
       status: flightData.status, // Include the status field
+      price: flightData.price,
+      currency: flightData.currency,
+      airline: flightData.airline,
+
     };
 
     // Return the flight details as a JSON response

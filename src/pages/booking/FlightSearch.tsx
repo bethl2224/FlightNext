@@ -5,6 +5,25 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useState } from "react";
 import FlightList from "./FlightList"
 import Image from "next/image"
+
+interface Trip {
+  flights: {
+    flightNumber: string;
+    departureTime: string;
+    arrivalTime: string;
+    id: string;
+    origin: { code: string; city: string };
+    destination: { code: string; city: string };
+    duration: number;
+    status: string;
+    airline: {name: string, code: string};
+    availableseats: number;
+    price: number;
+    currency: string;
+
+  }[];
+  layovers?: string[];
+}
 export interface Flight {
   id: string;
   flightNumber: string;
@@ -18,6 +37,11 @@ export interface Flight {
   layovers: string;
   status: string;
   trip_type: string;
+  airline: { name: string; code: string };
+  price: number;
+  currency: string;
+  availableSeats: number;
+
 }
 
 
@@ -175,20 +199,6 @@ const FlightSearch: React.FC<FlightSearchProps> = ({
       }
       const data = await response.json();
 
-      interface Trip {
-        flights: {
-          flightNumber: string;
-          departureTime: string;
-          arrivalTime: string;
-          id: string;
-          origin: { code: string; city: string };
-          destination: { code: string; city: string };
-          duration: number;
-          status: string;
-        }[];
-        layovers?: string[];
-      }
-
       const oneWayTrips = data.results?.oneWayTrips?.map((trip: Trip) =>
         trip.flights.map((flight) => ({
           flightNumber: flight.flightNumber,
@@ -203,6 +213,11 @@ const FlightSearch: React.FC<FlightSearchProps> = ({
           duration: `${Math.floor(flight.duration / 60)}h ${flight.duration % 60}m`,
           layovers: trip.layovers?.join(", ") || "None",
           status: flight.status,
+          airline: flight.airline,
+          availableseats: flight.availableseats,
+          price: flight.price,
+          currency: flight.currency,
+
         }))
       );
 
@@ -220,8 +235,19 @@ const FlightSearch: React.FC<FlightSearchProps> = ({
           duration: `${Math.floor(flight.duration / 60)}h ${flight.duration % 60}m`,
           layovers: trip.layovers?.join(", ") || "None",
           status: flight.status,
+            airline: flight.airline,
+          availableseats: flight.availableseats,
+          price: flight.price,
+          currency: flight.currency,
         }))
       );
+
+
+
+
+
+
+
 
 
       // const allFlights = [...(oneWayTrips || []), ...(roundTripFlights || [])];

@@ -17,7 +17,7 @@ async function getFlightDetails(origin, destination, date) {
     });
     if (!response.ok) {
       return NextResponse.json(
-        { message: `Error fetching flight details: ${response.statusText}` },
+        { message: `Error fetching flight details: ${response.error}` },
         { status: 400 }
       );
     }
@@ -115,6 +115,10 @@ export async function GET(req) {
             arrivalTime: flight.arrivalTime,
             duration: flight.duration,
             origin: flight.origin,
+            airline:flight.airline,
+            price: flight.price,
+            currency: flight.currency,
+            availableSeats: flight.availableSeats,
             destination: flight.destination,
             status: flight.status,
           })),
@@ -166,6 +170,10 @@ export async function GET(req) {
               arrivalTime: flight.arrivalTime,
               duration: flight.duration,
               origin: flight.origin,
+              airline:flight.airline,
+              price: flight.price,
+              currency: flight.currency,
+              availableSeats: flight.availableSeats,
               destination: flight.destination,
               status: flight.status,
             })),
