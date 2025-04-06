@@ -15,6 +15,10 @@ export interface Flight {
   layovers: string;
   status: string;
   trip_type: string;
+  airline: { name: string; code: string };
+  price: number;
+  currency: string;
+  availableSeats: number;
 }
 
 interface FlightListProps {

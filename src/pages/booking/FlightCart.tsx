@@ -43,16 +43,15 @@ const FlightCart: React.FC<FlightCartProps> = ({
   handlenext,
   onSave,
 }) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   const [totalFlightPrice, setTotalFlightPrice] = useState(0);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [totalHotelPrice, setTotalHotelPrice] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
 
   // Recalculate prices whenever the cart or hotelCart changes
   useEffect(() => {
     // Calculate total flight price (each flight is $100)
-    const flightPrice = cart.length * 100;
+    const flightPrice = cart.reduce((total, flight) => total + (flight.price || 0), 0);
 
     // Calculate total hotel price based on room type price per night
     const hotelPrice = hotelCart.reduce((total, hotel) => {
@@ -71,17 +70,20 @@ const FlightCart: React.FC<FlightCartProps> = ({
   // Final total
   const finalTotal = totalPrice + taxesAndFees;
 
+
   // Store the total amount breakdown in session storage
   useEffect(() => {
     sessionStorage.setItem(
       "totalAmountBreakdown",
       JSON.stringify({
+        totalFlightPrice: totalFlightPrice,
+        totalHotelPrice: totalHotelPrice,
         subtotal: totalPrice,
-        taxesAndFees,
+        taxesAndFees: taxesAndFees,
         total: finalTotal,
       })
     );
-  }, [totalPrice, taxesAndFees, finalTotal]);
+  }, [cart, totalFlightPrice, totalHotelPrice, totalPrice, taxesAndFees, finalTotal]);
 
   return (
     <>
@@ -110,6 +112,7 @@ const FlightCart: React.FC<FlightCartProps> = ({
                   <p className="mt-1 text-slate-400">
                     {flight.origin_name} → {flight.dest_name}
                   </p>
+                  <p className="mt-1 text-slate-400">${flight.price}</p> {/* Display flight price */}
                 </div>
                 <div className="flex-1 shrink text-right basis-0 text-slate-800">
                   <p>

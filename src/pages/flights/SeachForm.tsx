@@ -2,22 +2,8 @@ import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import FlightResults from "./FlightResults";
+import {Flight} from "../booking/FlightList"
 import { validateDate } from "@/utils/hotel-query";
-
-interface Flight {
-  id: string;
-  flightNumber: string;
-  departureTime: string;
-  arrivalTime: string;
-  origin: string;
-  destination: string;
-  origin_name: string;
-  dest_name: string;
-  duration: string;
-  layovers: string;
-  status: string;
-  trip_type: string;
-}
 
 interface SearchFormProps {
   departureQuery: string;
@@ -67,6 +53,11 @@ const SearchForm: React.FC<SearchFormProps> = ({
       setIsLoading(false); // Stop loading if validation fails
       return;
     }
+    if (!validateDate(startDate, endDate)) {
+      setIsLoading(false);
+      return;
+    }
+    
 
     //     // Check if departureQuery and arrivalQuery are the same
     if (
@@ -139,6 +130,10 @@ const SearchForm: React.FC<SearchFormProps> = ({
           }m`,
           layovers: trip.layovers?.join(", ") || "None",
           status: flight.status,
+          airline: flight.airline,
+          availableseats: flight.availableseats,
+          price: flight.price,
+          currency: flight.currency,
         }))
       );
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -150,20 +145,34 @@ const SearchForm: React.FC<SearchFormProps> = ({
           arrivalTime: flight.arrivalTime,
           id: flight.id,
           origin: flight.origin.code,
-          type: "back-way",
-          destination: flight.destination.code,
           origin_name: flight.origin.city,
           dest_name: flight.destination.city,
-          duration: `${Math.floor(flight.duration / 60)}h ${
-            flight.duration % 60
-          }m`,
+          type: "two-way",
+          destination: flight.destination.code,
+          duration: `${Math.floor(flight.duration / 60)}h ${flight.duration % 60}m`,
           layovers: trip.layovers?.join(", ") || "None",
           status: flight.status,
+          airline: flight.airline,
+          availableseats: flight.availableseats,
+          price: flight.price,
+          currency: flight.currency,
         }))
       );
 
       const all_flights = [...oneWayTrips, ...roundTripFlights];
-      setSingleFlightData(all_flights);
+
+      if((tripType =="twoway" && oneWayTrips.length > 0) || oneWayTrips.length >0){
+        setSingleFlightData(all_flights);
+
+      }
+
+      else{
+        alert("No flights found.")
+        setSingleFlightData([]);
+        return;
+      }
+      
+      
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {

@@ -10,7 +10,7 @@ const MyBookings = () => {
   const [currentPage, setCurrentPage] = useState(1); // Track the current page
   const [selectedItinerary, setSelectedItinerary] = useState(null); // Track the selected itinerary for the modal
   const itemsPerPage = 3; // Number of itineraries to display per page
-  
+  const [computedPrices, setComputedPrices] = useState([]);
   const filterEmptyItineraries = () => {
     setItineraries((prevItineraries) =>
       prevItineraries.filter(
@@ -51,6 +51,46 @@ const MyBookings = () => {
     fetchItineraries();
   }, []);
 
+
+  useEffect(() => {
+    const computePrices = () => {
+      const prices = itineraries.map((itinerary) => {
+        // Calculate total flight price
+        const flightPrice = itinerary.flightBooking?.flights?.reduce(
+          (total, flight) => total + (flight.price || 0),
+          0
+        ) || 0;
+  
+        // Calculate total hotel price
+        const hotelPrice = itinerary.hotelBookings?.reduce(
+          (total, hotel) => total + (hotel.price || 0),
+          0
+        ) || 0;
+  
+        // Calculate subtotal
+        const subtotal = flightPrice + hotelPrice;
+  
+        // Calculate taxes (10% of subtotal)
+        const taxes = subtotal * 0.1;
+  
+        // Calculate total
+        const total = subtotal + taxes;
+  
+        return {
+          itineraryId: itinerary.id,
+          flightPrice,
+          hotelPrice,
+          subtotal,
+          taxes,
+          total,
+        };
+      });
+  
+      setComputedPrices(prices);
+    };
+  
+    computePrices();
+  }, [itineraries]);
   // Calculate the current items to display
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -197,7 +237,12 @@ const MyBookings = () => {
         // Show itineraries if they exist
         <>
           <div className="grid grid-cols-1 gap-8">
-            {currentItineraries.map((itinerary) => (
+            {currentItineraries.map((itinerary) =>
+            
+
+            
+            
+            (
               <div
                 key={itinerary.id}
                 className="bg-white shadow-lg rounded-lg p-8 border border-gray-200 hover:shadow-xl transition-shadow"
@@ -217,16 +262,19 @@ const MyBookings = () => {
                     </h3>
 
 
-                    {itinerary.flightBooking && (
+                    {itinerary.flightBooking && itinerary.flightBooking[0] && (
   <div className="bg-gray-100 p-4 rounded-lg shadow-sm mb-4">
-    <p className="text-lg text-gray-800">
-      <strong className="text-purple-700">Status:</strong> {itinerary.flightBooking.status}
+        <p className="text-lg text-gray-800">
+      <strong className="text-purple-700">Last Name:</strong> {itinerary.flightBooking[0].lastName}
     </p>
     <p className="text-lg text-gray-800">
-      <strong className="text-purple-700">Booking Reference:</strong> {itinerary.flightBooking.bookingReference}
+      <strong className="text-purple-700">Booking Reference:</strong> {itinerary.flightBooking[0].bookingReference}
     </p>
     <p className="text-lg text-gray-800">
-      <strong className="text-purple-700">Ticket Number:</strong> {itinerary.flightBooking.ticketNumber}
+      <strong className="text-purple-700">Ticket Number:</strong> {itinerary.flightBooking[0].ticketNumber}
+    </p>
+    <p className="text-lg text-gray-800">
+      <strong className="text-purple-700">Status:</strong> {itinerary.flightBooking[0].status}
     </p>
   </div>
 )}
@@ -235,8 +283,8 @@ const MyBookings = () => {
   </div>
 
 
-  {itinerary.flightBooking?.flights?.length > 0 ? (
-  itinerary.flightBooking.flights.map((flight, index) => (
+  {itinerary.flightBooking[0]?.flights?.length > 0 ? (
+  itinerary.flightBooking[0].flights.map((flight, index) => (
     <div
       key={flight.id}
       className="p-4 bg-gray-50 rounded-lg shadow-sm mb-4 flex flex-wrap items-center justify-between"
@@ -251,17 +299,26 @@ const MyBookings = () => {
         <p>
           <strong>Arrival:</strong> {new Date(flight.arrivalTime).toLocaleString()}
         </p>
+        <p>
+          <strong>Origin:</strong> {flight.origin.name} ({flight.origin.code})
+        </p>
+        <p>
+          <strong>Destination:</strong> {flight.destination.name} ({flight.destination.code})
+        </p>
+        <p>
+          <strong>Price:</strong> ${flight.price}
+        </p>
       </div>
 
       {/* Cancel Button for the First Flight Only */}
-      {index === 0 && (
+      {index === itinerary.flightBooking[0].flights.length - 1 && (
         <button
           onClick={() =>
             cancelAllFlights(
-              itinerary.id, itinerary.flightBooking.lastName, itinerary.flightBooking.bookingReference
+              itinerary.id, itinerary.flightBooking[0].lastName, itinerary.flightBooking[0].bookingReference
             )
           }
-          className="px-4 py-2 bg-red-500 text-white text-sm rounded-lg shadow hover:bg-red-600 transition"
+                  className="ml-auto px-4 py-2 bg-red-500 text-white text-sm rounded-lg shadow hover:bg-red-600 transition"
         >
           Cancel Flight Trip
         </button>
@@ -286,7 +343,7 @@ const MyBookings = () => {
                         >
                           <div className="flex flex-wrap gap-4">
                             <p>
-                              <strong>Hotel ID:</strong> {hotel.hotelId}
+                              <strong>Hotel Name:</strong> {hotel.hotelName}
                             </p>
                             <p>
                               <strong>Room Type:</strong> {hotel.roomType}
@@ -312,6 +369,7 @@ const MyBookings = () => {
                       <p className="text-gray-600">No hotel bookings.</p>
                     )}
                   </div>
+                  
 
                   {/* Cancel Itinerary Button */}
                   <button
@@ -329,8 +387,11 @@ const MyBookings = () => {
                     View Details
                   </button>
                 </div>
+
+                  
               ))}
             </div>
+            
 
             {/* Pagination Controls */}
             <div className="flex justify-between items-center mt-8">
@@ -395,11 +456,19 @@ const MyBookings = () => {
 
       {/* Flights Section */}
       <h3 className="text-2xl font-semibold mb-4">Flights</h3>
-      {selectedItinerary.flightBooking?.flights?.length > 0 ? (
-        selectedItinerary.flightBooking.flights.map((flight, index) => (
+      {selectedItinerary.flightBooking[0]?.flights?.length > 0 ? (
+        selectedItinerary.flightBooking[0].flights.map((flight, index) => (
           <div key={index} className="mb-6 border-b pb-4">
             <p>
               <strong>Flight Number:</strong> {flight.flightNumber}
+            </p>
+            <p>
+              <strong>Origin:</strong>{" "}
+              {flight.origin.name}, {flight.origin.city}, {flight.origin.country}
+            </p>
+            <p>
+              <strong>Destination:</strong>{" "}
+              {flight.destination.name}, {flight.destination.city}, {flight.destination.country}
             </p>
             <p>
               <strong>Departure:</strong>{" "}
@@ -409,6 +478,8 @@ const MyBookings = () => {
               <strong>Arrival:</strong>{" "}
               {new Date(flight.arrivalTime).toLocaleString()}
             </p>
+           
+           
           </div>
         ))
       ) : (
@@ -428,7 +499,7 @@ const MyBookings = () => {
             {/* Hotel Details */}
             <div className="flex-1">
               <p>
-                <strong>Hotel ID:</strong> {hotel.hotelId}
+                <strong>Hotel Name:</strong> {hotel.hotelName}
               </p>
               <p>
                 <strong>Room Type:</strong> {hotel.roomType}
@@ -451,12 +522,58 @@ const MyBookings = () => {
   />
 )}
           </div>
-        ))
+      ))
+      
       ) : (
         <p>No hotel bookings.</p>
       )}
+
+<div className="bg-gray-100 p-4 rounded-lg shadow-sm mb-6">
+          <h3 className="text-xl font-semibold text-gray-700 mb-4">
+            Price Breakdown
+          </h3>
+          <div className="flex justify-between items-center mb-2">
+            <p className="text-lg text-gray-600">Flight Price:</p>
+            <p className="text-lg font-semibold text-gray-800">
+              ${selectedItinerary.priceSummary?.flightPrice || 0}
+            </p>
+          </div>
+          <div className="flex justify-between items-center mb-2">
+            <p className="text-lg text-gray-600">Hotel Price:</p>
+            <p className="text-lg font-semibold text-gray-800">
+              ${selectedItinerary.priceSummary?.hotelPrice || 0}
+            </p>
+          </div>
+          <div className="flex justify-between items-center mb-2">
+            <p className="text-lg text-gray-600">Subtotal:</p>
+            <p className="text-lg font-semibold text-gray-800">
+              ${selectedItinerary.priceSummary?.subtotal || 0}
+            </p>
+          </div>
+          <div className="flex justify-between items-center mb-2">
+            <p className="text-lg text-gray-600">Taxes (10%):</p>
+            <p className="text-lg font-semibold text-gray-800">
+              ${selectedItinerary.priceSummary?.taxes?.toFixed(2) || 0}
+            </p>
+          </div>
+          <div className="flex justify-between items-center">
+            <p className="text-lg text-gray-600">Total:</p>
+            <p className="text-lg font-bold text-purple-700">
+              ${selectedItinerary.priceSummary?.total?.toFixed(2) || 0}
+            </p>
+          </div>
+        </div>
+
+
+    
+
+
+
+
+
     </div>
   </div>
+
 )}
       <Footer />
     </>

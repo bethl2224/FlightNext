@@ -11,6 +11,7 @@ const CheckoutPage = () => {
 
   const router = useRouter();
   const [itinerary, setItinerary] = useState(null);
+
   const [creditCardNumber, setCreditCardNumber] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
   const [cvv, setCvv] = useState("");
@@ -21,11 +22,37 @@ const CheckoutPage = () => {
     const [expiryDateError, setExpiryDateError] = useState("");
     const [cvvError, setCvvError] = useState("");
     const [billingAddressError, setBillingAddressError] = useState("");
+    const [flightDetails, setFlightDetails] = useState(null)
 
   const searchParams = useSearchParams();
   const itineraryId = searchParams.get("itineraryId");
 
 
+  const [totalFlightPrice, setTotalFlightPrice] = useState(0);
+  const [totalHotelPrice, setTotalHotelPrice] = useState(0);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [taxesAndFees, setTaxesAndFees] = useState(0);
+  const [finalTotal, setFinalTotal] = useState(0);
+
+  // Initialize values from sessionStorage
+  useEffect(() => {
+    const storedBreakdown = sessionStorage.getItem("totalAmountBreakdown");
+    if (storedBreakdown) {
+      const {
+        totalFlightPrice,
+        totalHotelPrice,
+        subtotal,
+        taxesAndFees,
+        total,
+      } = JSON.parse(storedBreakdown);
+
+      setTotalFlightPrice(totalFlightPrice || 0);
+      setTotalHotelPrice(totalHotelPrice || 0);
+      setTotalPrice(subtotal || 0);
+      setTaxesAndFees(taxesAndFees || 0);
+      setFinalTotal(total || 0);
+    }
+  }, []);
   
   const validateExpiryDate = (expiryDate) => {
     const expiryRegex = /^(0[1-9]|1[0-2])\/\d{4}$/; // MM/YYYY format
@@ -126,6 +153,18 @@ const CheckoutPage = () => {
 
 
 
+  
+
+  useEffect(() => {
+    let flights = sessionStorage.getItem("flightDetails");
+    if (flightDetails) {
+      setFlightDetails(JSON.parse(flights));
+      console.log(flightDetails)
+      console.log("Flight Details:", JSON.parse(flightDetails));
+    }
+  }, []);
+
+
   const handleConfirmBooking = async () => {
     // Validate fields before proceeding
     const creditCardRegex = /^[0-9]{16}$/; // 16-digit credit card number
@@ -219,8 +258,6 @@ if (itinerary.flights && itinerary.flights.length > 0) {
       flight.bookingReference,
       itineraryId
     );
-    console.log(flightData.agencyId)
-    console.log(flightData.bookingReference)
     if (flightData) {
       yPosition += 10; // Add spacing
       doc.text(`First Name: ${flightData.firstName}`, 30, yPosition);
@@ -237,9 +274,17 @@ if (itinerary.flights && itinerary.flights.length > 0) {
       yPosition += 10;
       doc.text(`Status: ${flightData.status}`, 30, yPosition);
       yPosition += 10;
+
+       // Check if the content exceeds the page height
+ if (yPosition > 280) { // Assuming A4 page height is 297mm, leave some margin
+  doc.addPage(); // Add a new page
+  yPosition = 20; // Reset yPosition for the new page
+}
+
     
 
       for(const flightInfo of flightData.flights){
+         // Check if the content exceeds the page height
         doc.text(`Arrival: ${new Date(flightInfo.arrivalTime).toLocaleString()}`, 30, yPosition);
         yPosition += 10; // Add spacing
         doc.text(`Duration: ${flightInfo.duration} minutes`, 30, yPosition);
@@ -252,19 +297,27 @@ if (itinerary.flights && itinerary.flights.length > 0) {
         yPosition += 20; // Add extra spacing before the next flight
 
       }
+
+       // Check if the content exceeds the page height
+ if (yPosition > 280) { // Assuming A4 page height is 297mm, leave some margin
+  doc.addPage(); // Add a new page
+  yPosition = 20; // Reset yPosition for the new page
+}
+
      
     }
   }
 }
-
 // Add hotel details if they exist
 if (itinerary.hotelBookings && itinerary.hotelBookings.length > 0) {
+   // Check if the content exceeds the page height
+
   doc.text("Hotel Details:", 20, yPosition);
   yPosition += 10; // Add spacing
   itinerary.hotelBookings.forEach((hotel, index) => {
     doc.text(`Hotel ${index + 1}:`, 20, yPosition);
     yPosition += 10; // Add spacing
-    doc.text(`  Hotel ID: ${hotel.hotelId}`, 30, yPosition);
+    doc.text(`  Hotel Name: ${hotel.hotelName}`, 30, yPosition);
     yPosition += 10; // Add spacing
     doc.text(`  Room Type: ${hotel.roomType}`, 30, yPosition);
     yPosition += 10; // Add spacing
@@ -274,8 +327,12 @@ if (itinerary.hotelBookings && itinerary.hotelBookings.length > 0) {
     yPosition += 20; // Add extra spacing before the next hotel
   });
 }
+ // Check if the content exceeds the page height
+ if (yPosition > 280) { // Assuming A4 page height is 297mm, leave some margin
+  doc.addPage(); // Add a new page
+  yPosition = 20; // Reset yPosition for the new page
+}
 
-// Add price breakdown
 doc.text("Price Breakdown:", 20, yPosition);
 yPosition += 10; // Add spacing
 doc.text(`Flight Price: $${itinerary.priceBreakdown.flightPrice}`, 30, yPosition);
@@ -351,7 +408,38 @@ doc.text(`Total: $${itinerary.priceBreakdown.total}`, 30, yPosition);
                 {itinerary.flights.map((flight, index) => (
                   <div key={index} className="mb-4">
                     <p><strong>Last Name:</strong> {flight.lastName}</p>
+                    <p><strong>First Name:</strong> {flight.bookingInfo.firstName}</p>
                     <p><strong>Booking Reference:</strong> {flight.bookingReference}</p>
+                    <p><strong>Ticket Number:</strong> {flight.bookingInfo.ticketNumber}</p>
+                    <p><strong>Passport Number:</strong> {flight.bookingInfo.passportNumber}</p>
+
+
+                    {/* Flights Section */}
+    {flight.bookingInfo.flights.length > 0 && (
+      <div   style={{
+        maxHeight: "200px", // Adjust the height as needed
+        overflowY: "auto", // Enable vertical scrolling
+        border: "1px solid #ccc", // Add a light gray border
+        padding: "10px", // Add some padding inside the box
+        borderRadius: "8px", // Optional: Add rounded corners
+        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)", // Optional: Add a subtle shadow
+      }}>
+        {flight.bookingInfo.flights.map((flight, index) => (
+          <div key={index} className="mb-4">
+            <p><strong>Flight Number:</strong> {flight.flightNumber}</p>
+            <p><strong>Departure Time:</strong> {new Date(flight.departureTime).toLocaleString()}</p>
+            <p><strong>Arrival Time:</strong> {new Date(flight.arrivalTime).toLocaleString()}</p>
+            <p><strong>Duration:</strong> {flight.duration} minutes</p>
+            <p><strong>Price:</strong> {flight.price} {flight.currency}</p>
+            <p><strong>Airline:</strong> {flight.airline.name} ({flight.airline.code})</p>
+            <p><strong>Origin:</strong> {flight.origin.name} ({flight.origin.code}), {flight.origin.city}, {flight.origin.country}</p>
+            <p><strong>Destination:</strong> {flight.destination.name} ({flight.destination.code}), {flight.destination.city}, {flight.destination.country}</p>
+            <hr className="border-t border-gray-300 my-4" />
+            
+          </div>
+        ))}
+      </div>
+    )}
                   </div>
                 ))}
               </div>
@@ -368,7 +456,7 @@ doc.text(`Total: $${itinerary.priceBreakdown.total}`, 30, yPosition);
                   );
                   return (
                     <div key={index} className="mb-4">
-                      <p><strong>Hotel ID:</strong> {hotel.hotelId}</p>
+                      <p><strong>Hotel Name:</strong> {hotel.hotelName}</p>
                       <p><strong>Room Type:</strong> {hotel.roomType}</p>
                       <p><strong>Check-In Date:</strong> {new Date(hotel.checkInDate).toLocaleDateString()}</p>
                       <p><strong>Check-Out Date:</strong> {new Date(hotel.checkOutDate).toLocaleDateString()}</p>
@@ -457,7 +545,7 @@ doc.text(`Total: $${itinerary.priceBreakdown.total}`, 30, yPosition);
       </div>
       <div className="flex justify-between items-center mt-2">
         <p className="text-lg font-medium text-gray-700">Taxes and Fees:</p>
-        <p className="text-lg font-semibold text-gray-900">${itinerary.priceBreakdown.taxesAndFees}</p>
+        <p className="text-lg font-semibold text-gray-900">${itinerary.priceBreakdown.subtotal}</p>
       </div>
       <div className="flex justify-between items-center mt-2">
         <p className="text-lg font-medium text-gray-700">Total:</p>

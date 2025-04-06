@@ -2,12 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/utils/db"; // Adjust the path as necessary
 import { verifyToken } from "@/utils/auth"; // Adjust the path as necessary
 // Helper function to calculate the number of nights
-const calculateNights = (checkInDate, checkOutDate) => {
-  const checkIn = new Date(checkInDate);
-  const checkOut = new Date(checkOutDate);
-  const diffTime = Math.abs(checkOut.getTime() - checkIn.getTime());
-  return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Convert milliseconds to days
-};
+import { calculateNights } from "@/utils/fetch-flight";
 export async function GET(req, { params }) {
   try {
     const account = await verifyToken(req);
@@ -57,9 +52,64 @@ export async function GET(req, { params }) {
         { status: 403 }
       );
     }
+    console.log(itinerary.flights)
 
-    // Calculate flight price (each flight is $100)
-    const flightPrice = itinerary.flights.length * 100;
+  // Fetch flight booking info for each flight using get_flight_bookings
+  const flightInfoPromises = itinerary.flights.map(async (flight) => {
+    try {
+
+
+         // Call the external API to retrieve the flight info
+         const externalApiUrl = `${process.env.FLIGHT_URL}/api/bookings/retrieve?lastName=${flight.lastName}&bookingReference=${flight.bookingReference}`;
+         const apiKey = process.env.API_KEY;
+         const response = await fetch(externalApiUrl, {
+           method: "GET",
+           headers: {
+             "Content-Type": "application/json",
+             "x-api-key": apiKey,
+           },
+         });
+         
+         if (!response.ok) {
+           throw new Error(`Error fetching flight info: ${response.statusText}`);
+         }
+    
+      const flightInfo = await response.json();
+      return flightInfo;
+    } catch (error) {
+      console.error(
+        `Failed to fetch flight info for bookingReference: ${flight.bookingReference}`,
+        error
+      );
+      return null; // Handle errors gracefully
+    }
+  });
+
+  const flightInfos = await Promise.all(flightInfoPromises);
+  console.log(flightInfos)
+  let flightPrice = 0;
+
+
+
+  
+// Map flight info to corresponding flights and compute total price
+itinerary.flights = itinerary.flights.map((flight, index) => {
+  const flightInfo = flightInfos[index];
+  if (flightInfo) {
+     // Add the price of the flight to the total flight price
+     flightPrice += flightInfo.flights.reduce((total, flight) => total + (flight.price || 0), 0);
+
+
+    return {
+      ...flight,
+      bookingInfo: flightInfo, // Include the full flight object
+    };
+  }
+  return flight;
+});
+
+console.log(flightPrice)
+
 
     // Calculate hotel price and fetch room types
     let hotelPrice = 0;
@@ -71,30 +121,45 @@ export async function GET(req, { params }) {
           hotelId: hotel.hotelId,
         },
       });
-
-      // Add the room types to the response
-      hotelRoomTypes.push({
-        hotelId: hotel.hotelId,
-        roomTypes,
+    
+      // Fetch the hotel details (including the name)
+      const hotelDetails = await prisma.hotel.findUnique({
+        where: {
+          id: hotel.hotelId,
+        },
+        select: {
+          name: true, // Fetch only the hotel name
+        },
       });
-
-      // Find the specific room type for the booking
+     
+    
+      // Add the room types and hotel name to the hotelBookings array
+      hotel.roomTypes = roomTypes; // Add room types to the hotel booking
+      hotel.hotelName = hotelDetails?.name || "Unknown Hotel"; // Add hotel name to the hotel booking
+    
+      // Calculate the price for the booked room type
       const bookedRoomType = roomTypes.find(
         (room) => room.roomType === hotel.roomType
       );
-
-
-      const nights = calculateNights(hotel.checkInDate, hotel.checkOutDate); 
-
+    
+      const nights = calculateNights(hotel.checkInDate, hotel.checkOutDate);
+    
       if (bookedRoomType) {
         hotelPrice += nights * bookedRoomType.pricePerNight;
       }
     }
 
+    
+
+
+
+ 
+
     // Calculate subtotal, taxes, and total
     const subtotal = flightPrice + hotelPrice;
     const taxesAndFees = Math.round(subtotal * 0.1); // Example: 10% taxes
     const total = subtotal + taxesAndFees;
+      
 
     // Add price breakdown and room types to the response
     const response = {
@@ -104,13 +169,11 @@ export async function GET(req, { params }) {
         hotelPrice,
         subtotal,
         taxesAndFees,
-        total,
+        total
       },
       hotelRoomTypes, // Include all room types for the hotels
     };
-    console.log("here***********************888")
-    console.log("Response:", JSON.stringify(response));
-    console.log("Itinerary Data:", JSON.stringify(itinerary));
+
 
     return NextResponse.json(response, { status: 200 });
   } catch (error) {

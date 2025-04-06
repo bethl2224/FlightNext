@@ -1,20 +1,6 @@
 import React, { useState, useEffect } from "react";
 import FlightCard from "./FlightCard";
-
-interface Flight {
-  id: string;
-  flightNumber: string;
-  departureTime: string; // ISO string
-  arrivalTime: string;
-  origin: string;
-  destination: string;
-  origin_name: string;
-  dest_name: string;
-  duration: string;
-  layovers: string;
-  status: string;
-  trip_type: string; // Added trip_type property
-}
+import {Flight} from "../booking/FlightList"
 
 interface FlightResultsProps {
   flights?: Flight[][]; // A list of lists of flights
@@ -112,7 +98,6 @@ const FlightResults: React.FC<FlightResultsProps> = ({
           {isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
         </button>
       </div>
-
        {/* Filter Tabs (Only for Two-Way Trips) */}
 {trip_type === "twoway" && (
   <div className="flex gap-4 mb-6 overflow-x-auto">
@@ -152,18 +137,37 @@ const FlightResults: React.FC<FlightResultsProps> = ({
   </div>
 )}
 
+
+
       {paginatedRouteKeys.map((routeKey, index) => {
         const flightGroups = groupedFlights[routeKey];
 
         return (
           <div key={index} className="mb-8 border-b border-gray-300 pb-6">
+            
             <h3 className="font-bold text-2xl mb-6 text-indigo-600">
               From {routeKey.split("-")[0]} to {routeKey.split("-")[1]}
             </h3>
+                  {/* Column Header */}
+    <div
+      className={`grid grid-cols-8 font-bold text-center py-1 mb-2 ${
+        isDarkMode ? "bg-gray-800 text-white" : "bg-gray-200 text-gray-900"
+      }`}
+    >
+      <div>Airline</div>
+      <div>Route</div>
+      <div>Flight Number</div>
+      <div>Time</div>
+      <div>Duration</div>
+      <div>Layovers</div>
+      <div>Status</div>
+      <div>Price</div>
+    </div>
+
 
             {/* Display flights vertically for one-way, side by side for two-way */}
             {single === 0 ? (
-              <div className="flex flex-col gap-6">
+              <div className="flex flex-col gap-4">
                 {flightGroups.map((flightList, groupIndex) => (
                   <div
                     key={groupIndex}
@@ -200,6 +204,8 @@ const FlightResults: React.FC<FlightResultsProps> = ({
           </div>
         );
       })}
+
+
 
       {/* Pagination Controls */}
       <div className="flex justify-between items-center mt-4">

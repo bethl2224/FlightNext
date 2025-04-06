@@ -1,17 +1,17 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/utils/db";
 import { verifyToken } from "@/utils/auth";
+import { calculateNights } from "@/utils/fetch-flight";
 import {
   convertDate,
   customQueueMessage,
   addMessageQueue
 } from "@/utils/helper";
 
-import {get_flight_bookings} from "@/utils/fetch-flight";
+import { fetchAndComputeFlightPrices } from "@/utils/fetch-flight";
 
 const baseUrl = process.env.FLIGHT_URL;
 const apiKey = process.env.API_KEY;
-
 
 async function createFlightDetails(
   firstName,
@@ -95,6 +95,9 @@ async function getAvailableRooms(hotelId, roomType, checkInDate, checkOutDate) {
   return availableRooms;
 }
 
+
+
+
 export async function POST(req) {
   if (req.method !== "POST") {
     return NextResponse.json(
@@ -121,6 +124,11 @@ export async function POST(req) {
     }
 
     const { flights, hotelBookings } = await req.json();
+
+
+
+
+
 
     if (!flights && !hotelBookings) {
       return NextResponse.json(
@@ -292,13 +300,65 @@ export async function GET(req) {
       },
     });
 
-    // New change also getting a list of APIs from the external flight API
     for (let i = 0; i < itineraries.length; i++) {
-      for (let j = 0; j < itineraries[i].flights.length; j++) {
-        const flight = itineraries[i].flights[j];
-        const flightBooking = await get_flight_bookings(flight.lastName, flight.bookingReference);
-        itineraries[i].flightBooking = flightBooking;
-      }
+      let flightPrice = 0;
+      let hotelPrice = 0;
+    
+      // Fetch flight bookings and compute flight prices
+      const { flightBookings, flightPrice: computedFlightPrice } =
+        await fetchAndComputeFlightPrices(itineraries[i].flights);
+      flightPrice = computedFlightPrice;
+    
+      // Compute hotel prices
+
+       for (const hotel of itineraries[i].hotelBookings) {
+            // Fetch all room types for the hotel
+            const roomTypes = await prisma.hotelRoomType.findMany({
+              where: {
+                hotelId: hotel.hotelId,
+              },
+            });
+          
+            // Fetch the hotel details (including the name)
+            const hotelDetails = await prisma.hotel.findUnique({
+              where: {
+                id: hotel.hotelId,
+              },
+              select: {
+                name: true, // Fetch only the hotel name
+              },
+            });
+          
+            // Add the room types and hotel name to the hotelBookings array
+            hotel.roomTypes = roomTypes; // Add room types to the hotel booking
+            hotel.hotelName = hotelDetails?.name || "Unknown Hotel"; // Add hotel name to the hotel booking
+          
+            // Calculate the price for the booked room type
+            const bookedRoomType = roomTypes.find(
+              (room) => room.roomType === hotel.roomType
+            );
+          
+            const nights = calculateNights(hotel.checkInDate, hotel.checkOutDate);
+          
+            if (bookedRoomType) {
+              hotelPrice += nights * bookedRoomType.pricePerNight;
+            }
+          }
+      
+      // Calculate subtotal, taxes, and total
+      const subtotal = flightPrice + hotelPrice;
+      const taxes = subtotal * 0.1; // 10% tax
+      const total = subtotal + taxes;
+    
+      // Add price breakdown to the itinerary
+      itineraries[i].priceSummary = {
+        flightPrice,
+        hotelPrice,
+        subtotal,
+        taxes,
+        total,
+      };
+      itineraries[i].flightBooking = flightBookings
     }
 
     return NextResponse.json({ itineraries }, { status: 200 });
@@ -310,5 +370,4 @@ export async function GET(req) {
     );
   }
 }
-
 

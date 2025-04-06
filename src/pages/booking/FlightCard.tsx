@@ -13,6 +13,11 @@ interface FlightProps {
     duration: string;
     layovers: string;
     status: string;
+    airline: { name: string; code: string };
+    price: number;
+    currency: string;
+    availableSeats: number;
+    
   };
 }
 
@@ -51,6 +56,9 @@ const FlightCard: React.FC<FlightProps> = ({ flight }) => {
             Flight: {flight.flightNumber}
           </h3>
           <p className="text-gray-700">
+            <span className="font-medium">Airline:</span> {flight.airline.name} ({flight.airline.code})
+          </p>
+          <p className="text-gray-700">
             <span className="font-medium">{flight.origin_name}</span> ({flight.origin}) →{" "}
             <span className="font-medium">{flight.dest_name}</span> ({flight.destination})
           </p>
@@ -59,6 +67,12 @@ const FlightCard: React.FC<FlightProps> = ({ flight }) => {
           </p>
           <p className="text-gray-500">
             <span className="font-medium">Arrival:</span> {formatFlightDateTime(flight.arrivalTime)}
+          </p>
+          <p className="text-gray-500">
+            <span className="font-medium">Duration:</span> {flight.duration}
+          </p>
+          <p className="text-gray-500">
+            <span className="font-medium">Price:</span> ${flight.price} 
           </p>
         </div>
 
@@ -86,28 +100,34 @@ const FlightCard: React.FC<FlightProps> = ({ flight }) => {
                 <span className="text-gray-500">{flight.flightNumber}</span>
               </div>
               <div className="flex justify-between">
-                <span className="font-medium text-gray-700">Origin:</span>
+                <span className="font-medium text-gray-700">Airline:</span>
                 <span className="text-gray-500">
-                  {flight.origin_name} ({flight.origin})
+                  {flight.airline.name} ({flight.airline.code})
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="font-medium text-gray-700">Destination:</span>
+                <span className="font-medium text-gray-700">Origin to Destination:</span>
                 <span className="text-gray-500">
-                  {flight.dest_name} ({flight.destination})
+                  {flight.origin_name} ({flight.origin}) → {flight.dest_name} ({flight.destination})
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="font-medium text-gray-700">Departure:</span>
+                <span className="font-medium text-gray-700">Departure :</span>
                 <span className="text-gray-500">{formatFlightDateTime(flight.departureTime)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="font-medium text-gray-700">Arrival:</span>
+                <span className="font-medium text-gray-700">Arrival :</span>
                 <span className="text-gray-500">{formatFlightDateTime(flight.arrivalTime)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="font-medium text-gray-700">Duration:</span>
                 <span className="text-gray-500">{flight.duration}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium text-gray-700">Price:</span>
+                <span className="text-gray-500">
+                  ${flight.price}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="font-medium text-gray-700">Layovers:</span>
